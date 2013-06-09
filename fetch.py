@@ -69,8 +69,6 @@ class Fetcher(object):
         while next:
             next = self.fetch_page(next)
 
-        self.pool.join()
-
     def fetch_main_page(self):
         d = self.fetch(self.request(self.main_url))
 
@@ -81,9 +79,11 @@ class Fetcher(object):
     def fetch_page(self, request):
         details, page, next = self.fetch_list_page(request)
 
-        if details and page >= self.start_page:
+        if page >= self.start_page:
+            if details:
+                self.pool.map_async(self.fetch_data_document, details)
 
-        logging.info(next.url)
+        logging.info("Page {}".format(page))
         return next
 
     def fetch_list_page(self, request):
@@ -100,6 +100,13 @@ class Fetcher(object):
 
         return details, page, next
 
+    def fetch_data_document(self, request):
+        detail = self.fetch_detail_page(request)
+        if detail:
+            data = self.fetch_data_page(detail)
+            if data:
+                self.fetch_data(data)
+
     def fetch_detail_page(self, request):
         d = self.fetch(request)
 
@@ -115,22 +122,19 @@ class Fetcher(object):
         content = parser.match(meta.attr('content'))
         url = self.uri(content.group(1))
 
-        if self.stored(url):
-            logging.warning('Already stored ' + url)
-            return
-
-        response = self.send(self.request(url))
-
-        self.save(url, response.text)
+        return self.request(url)
         #document = etree.iterparse(StringIO(response.text.encode('utf-8')))
         #for event, element in document:
 
-    def stored(self, name):
-        return self.store.select(name, 'raw')
+    def fetch_data(self, request):
+        if self.store.select(request.url, 'raw'):
+            logging.warning('Already stored ' + request.url)
+            return
 
-    def save(self, name, data):
-        self.store.insert(data, name, 'raw')
-        logging.info('Stored ' + name)
+        response = self.send(request)
+        self.store.insert(response.text, response.url, 'raw')
+
+        logging.info('Stored ' + response.url)
 
     def request(self, url, data=None):
         method = 'GET' if data is None else 'POST'
