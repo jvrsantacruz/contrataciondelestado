@@ -1,0 +1,9 @@
+*.sw[op]
+*.pyc
+*.ps
+*.zip
+*.tex
+*.egg-info
+build
+dist
+.tox
