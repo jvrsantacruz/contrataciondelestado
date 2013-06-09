@@ -9,6 +9,7 @@ import re
 import logging
 from itertools import chain
 from urlparse import urljoin
+from argparse import ArgumentParser
 
 import requests
 from pyquery import PyQuery
@@ -150,10 +151,20 @@ class Fetcher(object):
         return response
 
 
+def parse_args():
+    parser = ArgumentParser(usage="%(prog)s [options] ARG ARG")
+
+    parser.add_argument("--page", default=None)
+
+    return parser.parse_args()
+
+
 def main():
     logging.basicConfig(level=logging.INFO, format=_LOGGING_FMT_)
 
-    Fetcher().run()
+    args = parse_args()
+
+    Fetcher(page=args.page).run()
 
 
 if __name__ == "__main__":
