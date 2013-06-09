@@ -158,7 +158,7 @@ class Fetcher(object):
 def parse_args():
     parser = ArgumentParser(usage="%(prog)s [options] ARG ARG")
 
-    parser.add_argument("--page", default=None)
+    parser.add_argument("--page", default=None, type=int)
 
     return parser.parse_args()
 
