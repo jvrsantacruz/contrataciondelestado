@@ -56,10 +56,11 @@ class Fetcher(object):
     main_url = urljoin(host, "/wps/portal/plataforma")
     list_url = urljoin(host, '/wps/portal/!ut/p/b1/hc7LDoIwFATQLyIdKLR0SUppS1SIIkg3hoUxJDw2xu8XiS7Fu5vkTOYSR1rP5z7jVMSUkgtxU_fs792jn6dueGfHrhoslFZQIFUCtqjyo6w4ijRaQLsA_LgEaz9UhZSZCQC1pwgM17GiEii__Q3wZ78hbiURlWGd1yU7WQ1Yk6W7sx9BB-wDNl48mHm8kdENmbBe8gJ_U3kE/dl4/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_G064CI9300DE90IOTJRCT70OT7/act/id=0/p=javax.servlet.include.path_info=QCPjspQCPLicitacionesResueltasView.jsp/231949228532/-/')
 
-    def __init__(self):
+    def __init__(self, page=None):
         self.pool = Pool(10)
         self.session = requests.Session()
         self.store = y_serial.Main('tmp.slite')
+        self.start_page = page if page is not None else 1
 
     def run(self):
         next = self.fetch_main_page()
@@ -77,12 +78,9 @@ class Fetcher(object):
         return self.request(self.uri(url))
 
     def fetch_page(self, request):
-        details, next = self.fetch_list_page(request)
+        details, page, next = self.fetch_list_page(request)
 
-        if details:
-            contents = self.pool.imap(self.fetch_detail_page, details)
-            contents = (request for request in contents if request)
-            self.pool.map(self.fetch_data_page, contents)
+        if details and page >= self.start_page:
 
         logging.info(next.url)
         return next
@@ -94,10 +92,12 @@ class Fetcher(object):
                    for a in d('.tdidExpedienteWidth a')
                    if a is not None]
 
+        page = int(d('[id*="textNumPag"]').text())
+
         action, data = submit(d('input[id*="siguienteLink"]'))
         next = self.request(self.uri(action), data)
 
-        return details, next
+        return details, page, next
 
     def fetch_detail_page(self, request):
         d = self.fetch(request)
