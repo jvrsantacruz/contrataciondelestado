@@ -52,10 +52,18 @@ def submit(input):
 
 
 class Fetcher(object):
+    """Fetching of xml documents from contrataciondelestado.es
+
+    1. Fetch main page, set session cookie and scrap list page link
+    2. Fetch list page and scrap details, page number and next page link
+        0. Skip page if previous to start_page
+        1. Fetch detail page and scrap the xml link
+        2. Fetch xml link page and resolve the <meta http-equiv="refresh">
+        3. Fetch xml link to the actual data and store it
+    """
 
     host = "https://contrataciondelestado.es"
     main_url = urljoin(host, "/wps/portal/plataforma")
-    list_url = urljoin(host, '/wps/portal/!ut/p/b1/hc7LDoIwFATQLyIdKLR0SUppS1SIIkg3hoUxJDw2xu8XiS7Fu5vkTOYSR1rP5z7jVMSUkgtxU_fs792jn6dueGfHrhoslFZQIFUCtqjyo6w4ijRaQLsA_LgEaz9UhZSZCQC1pwgM17GiEii__Q3wZ78hbiURlWGd1yU7WQ1Yk6W7sx9BB-wDNl48mHm8kdENmbBe8gJ_U3kE/dl4/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_G064CI9300DE90IOTJRCT70OT7/act/id=0/p=javax.servlet.include.path_info=QCPjspQCPLicitacionesResueltasView.jsp/231949228532/-/')
 
     def __init__(self, page=None):
         self.pool = Pool(10)
