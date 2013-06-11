@@ -153,7 +153,11 @@ class Fetcher(object):
     def fetch(self, request):
         logging.info("Sending " + str(request))
         response = self.send(request)
-        return PyQuery(response.text)
+        try:
+            return PyQuery(response.text)
+        except Exception, error:
+            self.store.insert(response.text, str(error), 'errors')
+            raise error
 
     def uri(self, url):
         return urljoin(self.host, url)
