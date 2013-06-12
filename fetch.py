@@ -104,7 +104,7 @@ class Fetcher(object):
         page = int(d('[id*="textNumPag"]').text())
 
         action, data = submit(d('input[id*="siguienteLink"]'))
-        next = self.request(self.uri(action), data)
+        next = self.request(self.uri(action), data) if data else None
 
         return details, page, next
 
