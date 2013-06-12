@@ -68,7 +68,7 @@ class Fetcher(object):
     def __init__(self, page=None):
         self.pool = Pool(10)
         self.session = requests.Session()
-        self.store = y_serial.Main('tmp.slite')
+        self.store = y_serial.Main('tmp.sqlite')
         self.start_page = page if page is not None else 1
 
     def run(self):
