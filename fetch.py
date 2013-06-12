@@ -131,8 +131,6 @@ class Fetcher(object):
         url = self.uri(content.group(1))
 
         return self.request(url)
-        #document = etree.iterparse(StringIO(response.text.encode('utf-8')))
-        #for event, element in document:
 
     def fetch_data(self, request):
         if self.store.select(request.url, 'raw'):
@@ -151,18 +149,14 @@ class Fetcher(object):
         ).prepare()
 
     def fetch(self, request):
-        logging.info("Sending " + str(request))
         response = self.send(request)
-        try:
-            return PyQuery(response.text)
-        except Exception, error:
-            self.store.insert(response.text, str(error), 'errors')
-            raise error
+        return PyQuery(response.text)
 
     def uri(self, url):
         return urljoin(self.host, url)
 
     def send(self, request):
+        logging.info(request)
         response = self.session.send(request, verify=False)
         return response
 
