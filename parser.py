@@ -59,8 +59,7 @@ class Parser(object):
         return content.encode('utf-8')
 
     def prepare_namespaces(self, document):
-        return dict((prefix or 'can', url)
-                    for prefix, url in document.nsmap.items())
+        return {prefix or 'can': url for prefix, url in document.nsmap.items()}
 
     def xpath(self, query):
         return self.document.xpath(query, namespaces=self.namespaces)
@@ -82,17 +81,21 @@ class Parser(object):
             'title': self.element('//cac:ProcurementProject/cbc:Name/text()'),
             'type': self.element('//cac:ProcurementProject/cbc:TypeCode/@name'),
             'subtype': self.element('//cac:ProcurementProject/cbc:SubTypeCode/@name'),
-            'issued_at': "{date}T{time}".format(
-                date=self.element('/can:ContractAwardNotice/cbc:IssueDate/text()')[:10],
+            'issued_at': self.parse_iso_datetime(
+                date=self.element('/can:ContractAwardNotice/cbc:IssueDate/text()'),
                 time=self.element('/can:ContractAwardNotice/cbc:IssueTime/text()')
             ),
-            'awarded_at': "{date}T{time}".format(
-                date=self.element('//cac:TenderResult/cbc:AwardDate/text()')[:10],
+            'awarded_at': self.parse_iso_datetime(
+                date=self.element('//cac:TenderResult/cbc:AwardDate/text()'),
                 time=self.element('//cac:TenderResult/cbc:AwardTime/text()')
             ),
             'amount': to_int(self.element('//cac:AwardedTenderedProject//cbc:TaxExclusiveAmount/text()')),
             'payable_amount': to_int(self.element('//cac:AwardedTenderedProject//cbc:PayableAmount/text()')),
         }
+
+    def parse_iso_datetime(self, date, time):
+        if date and time:
+            return "{date}T{time}".format(date=date[:10], time=time)
 
     def parse_contractor(self):
         return {
