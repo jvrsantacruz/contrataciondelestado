@@ -124,7 +124,7 @@ def to_int(number):
 
 
 def get_store():
-    return y_serial.Main('tmp.slite')
+    return y_serial.Main('tmp.sqlite')
 
 
 def main():
