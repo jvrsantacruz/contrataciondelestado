@@ -46,20 +46,10 @@ def prefixed_tag_names(namespaces):
     return dict(components)
 
 
-class Parser(object):
-    def __init__(self, content):
-        content = self.prepare_content(content)
-        self.document = self.prepare_document(content)
-        self.namespaces = self.prepare_namespaces(self.document)
-
-    def prepare_document(self, content):
-        return etree.fromstring(content)
-
-    def prepare_content(self, content):
-        return content.encode('utf-8')
-
-    def prepare_namespaces(self, document):
-        return {prefix or 'can': url for prefix, url in document.nsmap.items()}
+class Extractor(object):
+    def __init__(self, document, namespaces):
+        self.document = document
+        self.namespaces = namespaces
 
     def xpath(self, query):
         return self.document.xpath(query, namespaces=self.namespaces)
@@ -110,15 +100,67 @@ class Parser(object):
             'name': self.element('//cac:WinningParty//cac:PartyName/cbc:Name/text()'),
         }
 
+class Codice1Extractor(Extractor):
+    pass
+
+
+class Codice2Extractor(Extractor):
+    pass
+
+
+class Parser(object):
+
+    def __init__(self, content):
+        content = self.prepare_content(content)
+        document = self.prepare_document(content)
+        namespaces = self.prepare_namespaces(document)
+        self.extractor = self.prepare_extractor(document, namespaces)
+
+    def prepare_document(self, content):
+        return etree.fromstring(content)
+
+    def prepare_content(self, content):
+        return content.encode('utf-8')
+
+    def prepare_namespaces(self, document):
+        namespaces = {
+            'can': 'urn:dgpe:names:draft:codice:schema:xsd:ContractAwardNotice-1',
+            'cbc': 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1',
+            'cac': 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-1'
+        }
+
+        namespaces.update({
+            prefix or 'can': url for prefix, url in document.nsmap.items()
+        })
+
+        return namespaces
+
+    def prepare_extractor(self, document, namespaces):
+        version = self.version(document)
+
+        Extractor = {
+            None: Codice1Extractor,
+            'CODICE 2.0': Codice2Extractor,
+            'CODICE 2.01': Codice2Extractor
+        }[version]
+
+        return Extractor(document, namespaces)
+
+    def version(self, document):
+        return first(document.xpath('*[local-name() = "CustomizationID"]/text()'))
+
+    def parse(self):
+        return self.extractor.parse()
+
 
 def first(elements):
     for element in elements:
         return element
 
 
-def to_int(number):
+def to_float(number):
     try:
-        return int(number)
+        return float(number)
     except (TypeError, ValueError):
         return None
 
