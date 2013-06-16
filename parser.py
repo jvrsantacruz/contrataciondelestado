@@ -1,50 +1,12 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from itertools import chain
 from contextlib import contextmanager
 
 from lxml import etree
 import y_serial_v060 as y_serial
 
 from models import get_session, Licitation, Contractor, Contracted
-
-
-def prefixed_tag_names(namespaces):
-
-    root_components = ['ContractAwardNotice']
-
-    basic_components = [
-        'ActivityCode', 'AddressFormatCode', 'AwardDate', 'AwardTime', 'CityName',
-        'ContractFolderID', 'ContractFileID', 'ContractingPartyTypeCode', 'CustomizationID',
-        'Description', 'ElectronicMail', 'ExpenseCode', 'ID', 'IdentificationCode', 'IssueDate', 'IssueTime',
-        'GovernmentProcurementAgreementConstraintIndicator',
-        'ItemClassificationCode', 'JobTitle', 'Line', 'Name', 'PayableAmount',
-        'PostalZone', 'ProcedureCode', 'ProfileID', 'ResultCode',
-        'SubmissionMethodCode', 'SubTypeCode', 'TaxExclusiveAmount', 'Telefax',
-        'Telephone', 'TotalAmount', 'TypeCode', 'UrgencyCode', 'UUID',
-    ]
-
-    aggregate_components = [
-        'Address', 'AddressLine', 'AwardedTenderedProject', 'BudgetAmount',
-        'BuyerProfileURIID', 'Contact', 'ContractingParty',
-        'ContractingAuthorityParty', 'Country', 'DocumentAvailabilityPeriod',
-        'LegalMonetaryTotal', 'OccurrenceLocation', 'OpenTenderEvent', 'Party',
-        'PartyIdentification', 'PartyName', 'Person', 'PostalAddress',
-        'ProcurementProject', 'RequiredCommodityClassification',
-        'TenderingProcess', 'TenderResult', 'TenderSubmissionDeadlinePeriod',
-        'WinningParty', 'MinutesDocumentReference', 'TenderingTerms'
-    ]
-
-    def prefix(ns, tag):
-        return "{" + namespaces[ns] + "}" + tag
-
-    components = chain(
-        ((name, prefix('can', name)) for name in root_components),
-        ((name, prefix('cbc', name)) for name in basic_components),
-        ((name, prefix('cac', name)) for name in aggregate_components))
-
-    return dict(components)
 
 
 class Extractor(object):
