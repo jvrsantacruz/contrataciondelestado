@@ -41,9 +41,17 @@ class Extractor(object):
         return data
 
     def parse_codice(self):
-        return {
-            'uuid': self.element('/can:ContractAwardNotice/cbc:UUID/text()'),
-            'file': self.element('/can:ContractAwardNotice/cbc:ContractFileID/text()'),
+        with self.within('/can:ContractAwardNotice'):
+            base_data = {
+                'uuid': self.element('/cbc:UUID/text()'),
+                'file': (self.element('/cbc:ContractFileID/text()')
+                         or self.element('/cbc:ContractFolderID/text()')),
+            }
+
+            with self.within('/cac:TenderResult'):
+                base_data.update({'result_code': self.element('/cbc:ResultCode/@name')})
+
+        base_data.update({
             'title': self.element('//cac:ProcurementProject/cbc:Name/text()'),
             'type': self.element('//cac:ProcurementProject/cbc:TypeCode/@name'),
             'subtype': self.element('//cac:ProcurementProject/cbc:SubTypeCode/@name'),
@@ -59,7 +67,9 @@ class Extractor(object):
             'payable_amount': self.parse_payable_amount(),
             'budget_amount': self.parse_budget_amount(),
             'budget_payable_amount': self.parse_budget_payable_amount(),
-        }
+        })
+
+        return base_data
 
     def parse_iso_datetime(self, date, time):
         if date and time:
@@ -108,7 +118,7 @@ class Codice2Extractor(Extractor):
 
     def parse_contracted(self):
         return {
-            'nif': self.element('//cac:WinningParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
+            'nif': self.element('//cac:WinningParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS"]/text()'),
             'name': self.element('//cac:WinningParty//cac:PartyName/cbc:Name/text()'),
         }
 
