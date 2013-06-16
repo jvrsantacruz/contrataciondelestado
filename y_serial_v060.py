@@ -585,6 +585,25 @@ class Base:
                con.close()
           return response
 
+     def respond_iter( self, klass, sql, parlist=[] ):
+          try:
+               con = ysql.connect( self.db,    timeout = self.TIMEOUT,
+                                       isolation_level = self.TRANSACT )
+               cur = con.cursor()
+               response = {}
+               for tupler in cur.execute( sql, parlist ):
+                    self.responder( klass, tupler, response )
+                    kid, tunix, notes, pzblob  =  tupler
+                    yield kid, response.pop(kid)
+          except:
+               a = " !! Base.respond choked, probably because     \n"
+               b = "             object feels out of context.     \n"
+               c = "           Tried this sql and parameter list: \n"
+               raise IOError, "%s%s%s%s\n%s" % (a, b, c, sql, parlist)
+          finally:
+               cur.close()
+               con.close()
+
      def createtable( self, table=tab0 ):
           '''Columns created: key ID, unix time, notes, and pzblob.'''
           a = 'CREATE TABLE IF NOT EXISTS %s' % table
@@ -945,8 +964,39 @@ class Subquery( Util, Answer, Deletion ):
                return self.diccomma( dual, table, wild, POP )
 
 
+class IterSubquery( Subquery ):
+     def iterdicsub(self, subquery='', parlist=[], table=Base.tab0, POP=False):
+          '''Subquery table to get objects into response generator.'''
+          a = 'SELECT kid, tunix, notes, pzblob FROM %s %s'
+          sql = a % ( table, subquery )
+          response = self.respond_iter( 'Subquery', sql, parlist )
+          if POP:
+               self.deletesub( subquery, parlist, table )
+          return response
 
-class Display( Subquery ):
+     def iterdiclast( self, m=1, table=Base.tab0, POP=False ):
+          '''Get generator with last m consecutive kids in table.'''
+          kid = self.lastkid( table ) - m
+          return self.iterdicsub('WHERE kid > ?', [kid], table, POP )
+
+     def iterdiccomma( self, csvstr, table=Base.tab0, wild=True, POP=False ):
+          '''Get generator where notes match comma separated values.'''
+          parlist  = self.comma2list( csvstr, wild )
+          subquery = self.notesglob( parlist )
+          return self.iterdicsub( subquery, parlist, table, POP )
+
+     def iterselectdic( self, dual=1, table=Base.tab0, POP=False ):
+          '''Alias "selectdic":         diclast  OR diccomma.'''
+          #  assuming dual is either an ^integer OR ^csvstr string...
+          if isinstance( dual, int ):
+               return self.iterdiclast(  dual, table,       POP )
+          else:
+               wild = True
+               #      ^constrained for dual usage
+               return self.iterdiccomma( dual, table, wild, POP )
+
+
+class Display( IterSubquery ):
      '''_______________ View subquery via pretty print'''
 
      def viewsub(self, subquery='', parlist=[], table=Base.tab0, POP=False):
