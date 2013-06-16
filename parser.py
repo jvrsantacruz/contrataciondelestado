@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from itertools import chain
+from contextlib import contextmanager
 
 from lxml import etree
 import y_serial_v060 as y_serial
@@ -48,14 +49,27 @@ def prefixed_tag_names(namespaces):
 
 class Extractor(object):
     def __init__(self, document, namespaces):
+        self._prefix = ''
         self.document = document
         self.namespaces = namespaces
 
     def xpath(self, query):
         return self.document.xpath(query, namespaces=self.namespaces)
 
-    def element(self, query):
-        return first(self.xpath(query))
+    def element(self, query_text):
+        return first(self.xpath(self.query(query_text)))
+
+    def query(self, query_text):
+        return self._prefix + query_text
+
+    @contextmanager
+    def within(self, prefix):
+        old_prefix = self._prefix
+
+        self._prefix += prefix
+        yield self._prefix
+
+        self._prefix = old_prefix
 
     def parse(self):
         data = self.parse_codice()
