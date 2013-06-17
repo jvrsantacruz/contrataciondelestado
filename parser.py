@@ -130,6 +130,23 @@ class Codice2Extractor(Extractor):
         }
 
 
+class Validator(object):
+    def validate(self, data):
+        assert data['result_code'] not in ('Renuncia', 'Desistimiento', 'Desierto'), 'Not Adjudicated'
+        #assert data['result_code'] == 'Formalizado', 'Not Formalizado'
+
+        assert any(map(lambda e: e is not None, [
+            data['amount'], data['payable_amount'],
+            data['budget_amount'], data['budget_payable_amount']
+        ])), "All payment and budget amounts are None"
+
+        assert data['uuid'], "UUID is empty"
+        assert data['contractor']['nif'], "Contractor's nif is empty"
+        assert data['contracted']['nif'], "Contracted's nif is empty"
+
+        return True
+
+
 class Parser(object):
 
     def __init__(self, content):
