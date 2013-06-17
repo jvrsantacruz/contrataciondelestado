@@ -153,7 +153,7 @@ class Parser(object):
         content = self.prepare_content(content)
         document = self.prepare_document(content)
 
-        if self.document_type != 'ContractAwardNotice':
+        if self.document_type(document) != 'ContractAwardNotice':
             raise ValueError("Unkown document type")
 
         namespaces = self.prepare_namespaces(document)
@@ -193,7 +193,7 @@ class Parser(object):
         return first(document.xpath('*[local-name() = "CustomizationID"]/text()'))
 
     def document_type(self, document):
-        return self.element.tag.split('}')[-1]
+        return document.tag.split('}')[-1]
 
     def parse(self):
         return self.extractor.parse()
