@@ -202,8 +202,31 @@ def main():
     store = get_store()
     session = get_session()
 
-    print store.select(table='raw')
-    print Parser(store.select(table='raw')).parse()
+    for element in store.selectdic('.*', table='raw').itervalues():
+        try:
+            result = Parser(element[2]).parse()
+
+            print result
+
+            if result['result_code'] in ('Renuncia', 'Desistimiento'):
+                continue
+
+            assert result['uuid'], "UUID is empty"
+            assert result['contractor']['nif'], "Contractor's nif is empty"
+            assert result['contracted']['nif'], "Contracted's nif is empty"
+
+            assert filter(lambda r: r is not None, [
+                result['amount'], result['payable_amount'],
+                result['budget_amount'], result['budget_payable_amount']
+            ]), "All payment and budget amounts are None"
+
+        except AssertionError as error:
+            print element[1]
+            print element[2]
+            raise error
+
+        except ValueError as error:
+            pass
 
 if __name__ == "__main__":
     main()
