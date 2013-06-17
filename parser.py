@@ -91,7 +91,8 @@ class Codice1Extractor(Extractor):
 
     def parse_contracted(self):
         return {
-            'nif': self.element('//cac:WinnerParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
+            'nif': (self.element('//cac:WinnerParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
+                    or self.element('//cac:WinnerParty//cbc:ID')),
             'name': self.element('//cac:WinnerParty//cac:PartyName/cbc:Name/text()'),
         }
 
@@ -118,7 +119,9 @@ class Codice2Extractor(Extractor):
 
     def parse_contracted(self):
         return {
-            'nif': self.element('//cac:WinningParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS"]/text()'),
+            'nif': (self.element('//cac:WinningParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
+                    or self.element('//cac:WinningParty//cbc:ID')),
+            'name': self.element('//cac:WinnerParty//cac:PartyName/cbc:Name/text()'),
             'name': self.element('//cac:WinningParty//cac:PartyName/cbc:Name/text()'),
         }
 
