@@ -18,6 +18,33 @@ def get_session():
     return Session()
 
 
+def create_licitation(session, data):
+    try:
+        if licitation_exists(session, data['uuid']):
+            return False
+
+        data['contractor'] = get_or_create_party(session, data['contractor'])
+        data['contracted'] = get_or_create_party(session, data['contracted'])
+
+        session.add(Licitation(**data))
+        session.commit()
+    except Exception as error:
+        session.rollback()
+        print error
+    else:
+        return True
+
+
+def get_or_create_party(session, party):
+    return (session.query(Party).filter_by(nif=party['nif']).first()
+            or Party(**party))
+
+
+def licitation_exists(session, uuid):
+    by_uuid = session.query(Licitation).filter_by(uuid=uuid)
+    return session.query(by_uuid.exists()).scalar()
+
+
 class Licitation(Base):
     __tablename__ = "licitations"
 
