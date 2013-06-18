@@ -172,10 +172,19 @@ class Validator(object):
         ])), "All payment and budget amounts are None"
 
         assert data['uuid'], "UUID is empty"
-        assert data['contractor']['nif'], "Contractor's nif is empty"
-        assert data['contracted']['nif'], "Contracted's nif is empty"
+        assert data['file'], "File is empty"
+        assert data['issued_at'], "issued_at is empty"
+        assert data['awarded_at'], "awarded_at is empty"
 
-        return True
+        assert data['contractor'], "Contractor is empty"
+        assert data['contractor']['nif'], "Contractor's nif is empty"
+        assert data['contractor']['name'], "Contractor's name is empty"
+
+        assert data['contracted'], "Contracted is empty"
+        assert data['contracted']['nif'], "Contracted's nif is empty"
+        assert data['contracted']['name'], "Contracted's name is empty"
+
+        return data
 
 
 class Parser(object):
