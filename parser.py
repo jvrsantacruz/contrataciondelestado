@@ -64,8 +64,11 @@ class Extractor(object):
         return data
 
     def parse_iso_datetime(self, date, time):
-        if date and time:
-            return "{date}T{time}".format(date=date[:10], time=time)
+        if date:
+            zone = date[10:]
+            nozone_date = date[:10]
+            nozone_time = (time and time[:10]) or "00:00:00"
+            return "{date}T{time}{zone}".format(date=nozone_date, time=nozone_time, zone=zone)
 
 
 class Codice1Extractor(Extractor):
