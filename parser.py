@@ -157,9 +157,14 @@ class Codice2Extractor(Extractor):
 
 
 class Validator(object):
+    accepted_result_codes = {
+        'Adjudicado': '8',
+        'Formalizado': '9',
+        'Adjudicado Definitivamente': '2',
+    }
+
     def validate(self, data):
-        assert data['result_code'] not in ('Renuncia', 'Desistimiento', 'Desierto'), 'Not Adjudicated'
-        #assert data['result_code'] == 'Formalizado', 'Not Formalizado'
+        assert data['result_code'] in self.accepted_result_codes.values(), 'Not Successful'
 
         assert any(map(lambda e: e is not None, [
             data['amount'], data['payable_amount'],
