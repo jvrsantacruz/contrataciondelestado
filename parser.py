@@ -35,6 +35,7 @@ class Extractor(object):
 
     def parse(self):
         data = self.parse_codice()
+        data.update(self.parse_extra())
         data['contractor'] = self.parse_contractor()
         data['contracted'] = self.parse_contracted()
 
@@ -42,34 +43,25 @@ class Extractor(object):
 
     def parse_codice(self):
         with self.within('/can:ContractAwardNotice'):
-            base_data = {
+            data = {
                 'uuid': self.element('/cbc:UUID/text()'),
-                'file': (self.element('/cbc:ContractFileID/text()')
-                         or self.element('/cbc:ContractFolderID/text()')),
+                'file': (self.element('/cbc:ContractFileID/text()') or self.element('/cbc:ContractFolderID/text()')),
+                'issued_at': self.parse_iso_datetime(
+                    date=self.element('/cbc:IssueDate/text()'),
+                    time=self.element('/cbc:IssueTime/text()')
+                ),
             }
 
             with self.within('/cac:TenderResult'):
-                base_data.update({'result_code': self.element('/cbc:ResultCode/@name')})
+                data.update({
+                    'result_code': self.element('/cbc:ResultCode/text()'),
+                    'awarded_at': self.parse_iso_datetime(
+                        date=self.element('/cbc:AwardDate/text()'),
+                        time=self.element('/cbc:AwardTime/text()')
+                    ),
+                })
 
-        base_data.update({
-            'title': self.element('//cac:ProcurementProject/cbc:Name/text()'),
-            'type': self.element('//cac:ProcurementProject/cbc:TypeCode/@name'),
-            'subtype': self.element('//cac:ProcurementProject/cbc:SubTypeCode/@name'),
-            'issued_at': self.parse_iso_datetime(
-                date=self.element('/can:ContractAwardNotice/cbc:IssueDate/text()'),
-                time=self.element('/can:ContractAwardNotice/cbc:IssueTime/text()')
-            ),
-            'awarded_at': self.parse_iso_datetime(
-                date=self.element('//cac:TenderResult/cbc:AwardDate/text()'),
-                time=self.element('//cac:TenderResult/cbc:AwardTime/text()')
-            ),
-            'amount': self.parse_amount(),
-            'payable_amount': self.parse_payable_amount(),
-            'budget_amount': self.parse_budget_amount(),
-            'budget_payable_amount': self.parse_budget_payable_amount(),
-        })
-
-        return base_data
+        return data
 
     def parse_iso_datetime(self, date, time):
         if date and time:
@@ -77,60 +69,88 @@ class Extractor(object):
 
 
 class Codice1Extractor(Extractor):
-    def parse_amount(self):
-        return to_float(self.element('//cac:TenderResult/cbc:AwardPriceAmount/text()'))
+    def parse_extra(self):
+        with self.within('/can:ContractAwardNotice'):
+            with self.within('/cac:TenderResult'):
+                data = {
+                    'amount': to_float(self.element('/cbc:AwardPriceAmount/text()')),
+                    'payable_amount': to_float(self.element('/cbc:TotalAwardPriceAmount/text()')),
+                }
 
-    def parse_payable_amount(self):
-        return to_float(self.element('//cac:TenderResult/cbc:TotalAwardPriceAmount/text()'))
+                with self.within('/cac:ProcuringProject'):
+                    data.update({
+                        'title': self.element('/cbc:ContractName/text()'),
+                        'type': self.element('/cbc:TypeCode/@name'),
+                        'subtype': self.element('/cbc:SubTypeCode/@name'),
+                        'budget_amount': to_float(self.element('/cbc:NetBudgetAmount/text()')),
+                        'budget_payable_amount': to_float(self.element('/cbc:TotalBudgetAmount/text()')),
+                    })
 
-    def parse_budget_amount(self):
-        return to_float(self.element('//cac:ProcuringProject/cbc:NetBudgetAmount/text()'))
-
-    def parse_budget_payable_amount(self):
-        return to_float(self.element('//cac:ProcuringProject/cbc:TotalBudgetAmount/text()'))
+        return data
 
     def parse_contracted(self):
-        return {
-            'nif': (self.element('//cac:WinnerParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
-                    or self.element('//cac:WinnerParty//cbc:ID')),
-            'name': self.element('//cac:WinnerParty//cac:PartyName/cbc:Name/text()'),
-        }
+        with self.within('/can:ContractAwardNotice/cac:TenderResult/cac:WinnerParty'):
+            return {
+                'name': self.element('/cac:PartyName/cbc:Name/text()'),
+                'nif': self.element('/cac:PartyIdentification/cbc:ID/text()')
+            }
 
     def parse_contractor(self):
-        return {
-            'nif': self.element('//cac:ContractingAuthorityParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
-            'name': self.element('//cac:ContractingAuthorityParty//cac:PartyName/cbc:Name/text()'),
-            'uri': self.element('//cac:ContractingAuthorityParty/cbc:BuyerProfileURIID/text()'),
-        }
+        with self.within('/can:ContractAwardNotice/cac:ContractingAuthorityParty'):
+            data = {'uri': self.element('/cbc:BuyerProfileURIID/text()')}
+
+            with self.within('/cac:Party'):
+                data.update({
+                    'name': self.element('/cac:PartyName/cbc:Name/text()'),
+                    'nif': self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
+                })
+
+        return data
 
 
 class Codice2Extractor(Extractor):
-    def parse_amount(self):
-        return to_float(self.element('//cac:AwardedTenderedProject//cbc:TaxExclusiveAmount/text()'))
+    def parse_extra(self):
+        data = {}
 
-    def parse_payable_amount(self):
-        return to_float(self.element('//cac:AwardedTenderedProject//cbc:PayableAmount/text()'))
+        with self.within('/can:ContractAwardNotice'):
+            with self.within('/cac:ProcurementProject'):
+                data.update({
+                    'title': self.element('/cbc:Name/text()'),
+                    'type': self.element('/cbc:TypeCode/@name'),
+                    'subtype': self.element('/cbc:SubTypeCode/@name'),
+                    'budget_amount': to_float(self.element('/cbc:BudgetAmount/cbc:TaxExclusiveAmount/text()')),
+                    'budget_payable_amount': to_float(self.element('/cbc:BudgetAmount/cbc:PayableAmount/text()')),
+                })
 
-    def parse_budget_amount(self):
-        return to_float(self.element('//cac:BudgetAmount/cbc:TaxExclusiveAmount/text()'))
+            with self.within('/cac:TenderResult'):
+                with self.within('/cac:AwardedTenderedProject'):
+                    with self.within('/cac:LegalMonetaryTotal'):
+                        data.update({
+                            'amount': to_float(self.element('/cbc:TaxExclusiveAmount/text()')),
+                            'payable_amount': to_float(self.element('/cbc:PayableAmount/text()')),
+                        })
 
-    def parse_budget_payable_amount(self):
-        return to_float(self.element('//cac:BudgetAmount/cbc:TotalAmount/text()'))
+        return data
 
     def parse_contracted(self):
-        return {
-            'nif': (self.element('//cac:WinningParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
-                    or self.element('//cac:WinningParty//cbc:ID')),
-            'name': self.element('//cac:WinnerParty//cac:PartyName/cbc:Name/text()'),
-            'name': self.element('//cac:WinningParty//cac:PartyName/cbc:Name/text()'),
-        }
+        with self.within('/can:ContractAwardNotice'):
+            with self.within('/cac:TenderResult'):
+                with self.within('/cac:WinningParty'):
+                    return {
+                        'nif': (self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="NIE" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
+                                or self.element('/cac:PartyIdentification/cbc:ID/text()')),
+                        'name': self.element('/cac:PartyName/cbc:Name/text()'),
+                    }
 
     def parse_contractor(self):
-        return {
-            'nif': self.element('//cac:ContractingParty//cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
-            'name': self.element('//cac:ContractingParty//cac:PartyName/cbc:Name/text()'),
-            'uri': self.element('//cac:ContractingParty/cbc:BuyerProfileURIID/text()'),
-        }
+        with self.within('/can:ContractAwardNotice'):
+            with self.within('/cac:ContractingParty'):
+                with self.within('/cac:Party'):
+                    return {
+                        'nif': self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
+                        'name': self.element('/cac:PartyName/cbc:Name/text()'),
+                        'uri': self.element('/cbc:WebsiteURI/text()'),
+                    }
 
 
 class Validator(object):
