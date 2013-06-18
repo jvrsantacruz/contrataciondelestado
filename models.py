@@ -41,34 +41,23 @@ class Licitation(Base):
     issued_at = Column(DateTime())
     awarded_at = Column(DateTime())
 
-    contractor_id = Column(Integer(), ForeignKey('contractors.id'))
-    contractor = relationship("Contractor")
+    contractor_id = Column(Integer(), ForeignKey('parties.id'))
+    contractor = relationship("Party",
+                              primaryjoin="Licitation.contractor_id==Party.id")
 
-    contracted_id = Column(Integer(), ForeignKey('contracted.id'))
-    contracted = relationship("Contracted")
+    contracted_id = Column(Integer(), ForeignKey('parties.id'))
+    contracted = relationship("Party",
+                              primaryjoin="Licitation.contracted_id==Party.id")
 
 
 class Party(Base):
     __tablename__ = "parties"
     __mapper_args__ = {'polymorphic_identity': 'party'}
 
-    id = Column(Unicode(), primary_key=True)
+    id = Column(Integer(), primary_key=True)
     nif = Column(Unicode(), unique=True)
     name = Column(Unicode())
-
-
-class Contractor(Party):
-    __tablename__ = "contractors"
-    __mapper_args__ = {'polymorphic_identity': 'contractor'}
-
-    id = Column(Integer(), ForeignKey(Party.id), primary_key=True)
-
-
-class Contracted(Party):
-    __tablename__ = "contracted"
-    __mapper_args__ = {'polymorphic_identity': 'contractor'}
-
-    id = Column(Integer(), ForeignKey(Party.id), primary_key=True)
+    uri = Column(Unicode())
 
 
 if __name__ == "__main__":
