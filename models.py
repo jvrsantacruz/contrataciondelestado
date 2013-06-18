@@ -34,6 +34,9 @@ class Licitation(Base):
     amount = Column(Float())
     payable_amount = Column(Float())
 
+    budget_amount = Column(Float())
+    budget_payable_amount = Column(Float())
+
     issued_at = Column(DateTime())
     awarded_at = Column(DateTime())
 
