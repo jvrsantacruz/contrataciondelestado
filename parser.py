@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import sys
 from contextlib import contextmanager
 
 from lxml import etree
@@ -255,35 +256,37 @@ def get_store():
     return y_serial.Main('tmp.sqlite')
 
 
+def parse(store, validator):
+    errors, discarted, parsed = 0, 0, 0
+    for n, (timestamp, key, value) in store.iterselectdic('.*', table='raw'):
+        try:
+            yield validator.validate(Parser(value).parse())
+        except (ValueError, AssertionError) as error:
+            if str(error) in ("Not Successful", "Unkown document type"):
+                discarted += 1
+            else:
+                print('ignoring', key)
+                print error
+                errors += 1
+        else:
+            parsed += 1
+
+        if n % 50 == 0:
+            sys.stdout.write("\r\bParsed: {} Errors: {} Discarted: {} Total: {}"
+                             .format(parsed, errors, discarted, discarted + errors + parsed))
+            sys.stdout.flush()
+
+
 def main():
     store = get_store()
     session = get_session()
+    validator = Validator()
 
-    for element in store.selectdic('.*', table='raw').itervalues():
-        try:
-            result = Parser(element[2]).parse()
+    total = 0
+    for data in parse(store, validator):
+        total += data['amount'] or data['budget_amount']
 
-            print result
-
-            if result['result_code'] in ('Renuncia', 'Desistimiento'):
-                continue
-
-            assert result['uuid'], "UUID is empty"
-            assert result['contractor']['nif'], "Contractor's nif is empty"
-            assert result['contracted']['nif'], "Contracted's nif is empty"
-
-            assert filter(lambda r: r is not None, [
-                result['amount'], result['payable_amount'],
-                result['budget_amount'], result['budget_payable_amount']
-            ]), "All payment and budget amounts are None"
-
-        except AssertionError as error:
-            print element[1]
-            print element[2]
-            raise error
-
-        except ValueError as error:
-            pass
+    print('Total: ' + str(total))
 
 if __name__ == "__main__":
     main()
