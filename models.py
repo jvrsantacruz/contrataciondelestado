@@ -27,6 +27,7 @@ class Licitation(Base):
 
     type = Column(Unicode())
     subtype = Column(Unicode())
+    result_code = Column(Unicode())
 
     uri = Column(Unicode())
     title = Column(Unicode())
