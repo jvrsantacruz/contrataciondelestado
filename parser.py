@@ -8,7 +8,7 @@ from lxml import etree
 import y_serial_v060 as y_serial
 from dateutil.parser import parse as parse_date
 
-from models import get_session, Licitation, Contractor, Contracted
+from models import get_session, create_licitation
 
 
 class Extractor(object):
@@ -282,22 +282,27 @@ def parse(store, validator):
         else:
             parsed += 1
 
-        if n % 50 == 0:
-            sys.stdout.write("\r\bParsed: {} Errors: {} Discarted: {} Total: {}"
-                             .format(parsed, errors, discarted, discarted + errors + parsed))
-            sys.stdout.flush()
-
 
 def main():
     store = get_store()
     session = get_session()
     validator = Validator()
 
-    total = 0
-    for data in parse(store, validator):
-        total += data['amount'] or data['budget_amount']
+    inserted, rejected = 0, 0
 
-    print('Total: ' + str(total))
+    for data in parse(store, validator):
+        if create_licitation(session, data):
+            inserted += 1
+        else:
+            rejected += 1
+
+        sys.stdout.write("\bInserted: {} Rejected: {} Total: {}\r"
+                         .format(inserted, rejected, inserted + rejected))
+        sys.stdout.flush()
+
+    print("Inserted: {} Rejected: {} Total: {}"
+          .format(inserted, rejected, inserted + rejected))
+
 
 if __name__ == "__main__":
     main()
