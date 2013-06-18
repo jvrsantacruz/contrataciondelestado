@@ -6,6 +6,7 @@ from contextlib import contextmanager
 
 from lxml import etree
 import y_serial_v060 as y_serial
+from dateutil.parser import parse as parse_date
 
 from models import get_session, Licitation, Contractor, Contracted
 
@@ -68,7 +69,7 @@ class Extractor(object):
         if date:
             zone = date[10:]
             nozone_date = date[:10]
-            nozone_time = (time and time[:10]) or "00:00:00"
+            nozone_time = (time and time[:8]) or "00:00:00"
             return "{date}T{time}{zone}".format(date=nozone_date, time=nozone_time, zone=zone)
 
 
@@ -164,13 +165,15 @@ class Validator(object):
         'Adjudicado Definitivamente': '2',
     }
 
+    def assert_any_is_not_none(self, data, *names):
+        assert any(data[name] is not None for name in names),\
+            "One of {} is empty".format(names)
+
     def validate(self, data):
         assert data['result_code'] in self.accepted_result_codes.values(), 'Not Successful'
 
-        assert any(map(lambda e: e is not None, [
-            data['amount'], data['payable_amount'],
-            data['budget_amount'], data['budget_payable_amount']
-        ])), "All payment and budget amounts are None"
+        self.assert_any_is_not_none(data, 'amount', 'budget_amount')
+        self.assert_any_is_not_none(data, 'payable_amount', 'budget_payable_amount')
 
         assert data['uuid'], "UUID is empty"
         assert data['file'], "File is empty"
@@ -184,6 +187,14 @@ class Validator(object):
         assert data['contracted'], "Contracted is empty"
         assert data['contracted']['nif'], "Contracted's nif is empty"
         assert data['contracted']['name'], "Contracted's name is empty"
+
+        data = self.convert(data)
+
+        return data
+
+    def convert(self, data):
+        data['issued_at'] = parse_date(data['issued_at'])
+        data['awarded_at'] = parse_date(data['awarded_at'])
 
         return data
 
