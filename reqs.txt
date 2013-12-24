@@ -1,5 +1,0 @@
-gevent
-pyquery
-requests
-cssselect
-python-dateutil

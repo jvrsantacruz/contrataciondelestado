@@ -2,16 +2,22 @@
 #-*- coding: utf-8 -*-
 
 import sys
+import zlib
+import logging
 from contextlib import contextmanager
 
 from lxml import etree
 import y_serial_v060 as y_serial
-from dateutil.parser import parse as parse_date
 
-from models import get_session, create_licitation
+from store import Store
+from validators import validate
+from models import get_session, Licitation
 
 
-class Extractor(object):
+logger = logging.getLogger('parser')
+
+
+class ParserImplementation(object):
     def __init__(self, document, namespaces):
         self._prefix = ''
         self.document = document
@@ -35,36 +41,6 @@ class Extractor(object):
 
         self._prefix = old_prefix
 
-    def parse(self):
-        data = self.parse_codice()
-        data.update(self.parse_extra())
-        data['contractor'] = self.parse_contractor()
-        data['contracted'] = self.parse_contracted()
-
-        return data
-
-    def parse_codice(self):
-        with self.within('/can:ContractAwardNotice'):
-            data = {
-                'uuid': self.element('/cbc:UUID/text()'),
-                'file': (self.element('/cbc:ContractFileID/text()') or self.element('/cbc:ContractFolderID/text()')),
-                'issued_at': self.parse_iso_datetime(
-                    date=self.element('/cbc:IssueDate/text()'),
-                    time=self.element('/cbc:IssueTime/text()')
-                ),
-            }
-
-            with self.within('/cac:TenderResult'):
-                data.update({
-                    'result_code': self.element('/cbc:ResultCode/text()'),
-                    'awarded_at': self.parse_iso_datetime(
-                        date=self.element('/cbc:AwardDate/text()'),
-                        time=self.element('/cbc:AwardTime/text()')
-                    ),
-                })
-
-        return data
-
     def parse_iso_datetime(self, date, time):
         if date:
             zone = date[10:]
@@ -73,15 +49,36 @@ class Extractor(object):
             return "{date}T{time}{zone}".format(date=nozone_date, time=nozone_time, zone=zone)
 
 
-class Codice1Extractor(Extractor):
-    def parse_extra(self):
+class Codice1Parser(ParserImplementation):
+    def parse(self):
+        data = self.parse_codice()
+        data['contractor'] = self.parse_contractor()
+        data['contracted'] = self.parse_contracted()
+        return data
+
+    def parse_codice(self):
         with self.within('/can:ContractAwardNotice'):
+            data = {
+                'uuid': self.element('/cbc:UUID/text()'),
+                'file': self.element('/cbc:ContractFileID/text()'),
+                'issued_at': self.parse_iso_datetime(
+                    date=self.element('/cbc:IssueDate/text()'),
+                    time=self.element('/cbc:IssueTime/text()')
+                ),
+            }
             with self.within('/cac:TenderResult'):
-                data = {
+                data.update({
+                    'result_code': self.element('/cbc:ResultCode/text()'),
+                    'awarded_at': self.parse_iso_datetime(
+                        date=self.element('/cbc:AwardDate/text()'),
+                        time=self.element('/cbc:AwardTime/text()')
+                    ),
+                })
+            with self.within('/cac:TenderResult'):
+                data.update({
                     'amount': to_float(self.element('/cbc:AwardPriceAmount/text()')),
                     'payable_amount': to_float(self.element('/cbc:TotalAwardPriceAmount/text()')),
-                }
-
+                })
                 with self.within('/cac:ProcuringProject'):
                     data.update({
                         'title': self.element('/cbc:ContractName/text()'),
@@ -90,7 +87,6 @@ class Codice1Extractor(Extractor):
                         'budget_amount': to_float(self.element('/cbc:NetBudgetAmount/text()')),
                         'budget_payable_amount': to_float(self.element('/cbc:TotalBudgetAmount/text()')),
                     })
-
         return data
 
     def parse_contracted(self):
@@ -109,15 +105,35 @@ class Codice1Extractor(Extractor):
                     'name': self.element('/cac:PartyName/cbc:Name/text()'),
                     'nif': self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
                 })
-
         return data
 
 
-class Codice2Extractor(Extractor):
-    def parse_extra(self):
-        data = {}
+class Codice2Parser(ParserImplementation):
+    def parse(self):
+        data = self.parse_codice()
+        data['contractor'] = self.parse_contractor()
+        data['contracted'] = self.parse_contracted()
+        return data
 
+    def parse_codice(self):
         with self.within('/can:ContractAwardNotice'):
+            data = {
+                'uuid': self.element('/cbc:UUID/text()'),
+                'file': self.element('/cbc:ContractFolderID/text()'),
+                'issued_at': self.parse_iso_datetime(
+                    date=self.element('/cbc:IssueDate/text()'),
+                    time=self.element('/cbc:IssueTime/text()')
+                ),
+            }
+            with self.within('/cac:TenderResult'):
+                data.update({
+                    'result_code': self.element('/cbc:ResultCode/text()'),
+                    'awarded_at': self.parse_iso_datetime(
+                        date=self.element('/cbc:AwardDate/text()'),
+                        time=self.element('/cbc:AwardTime/text()')
+                    ),
+                })
+
             with self.within('/cac:ProcurementProject'):
                 data.update({
                     'title': self.element('/cbc:Name/text()'),
@@ -134,7 +150,6 @@ class Codice2Extractor(Extractor):
                             'amount': to_float(self.element('/cbc:TaxExclusiveAmount/text()')),
                             'payable_amount': to_float(self.element('/cbc:PayableAmount/text()')),
                         })
-
         return data
 
     def parse_contracted(self):
@@ -188,28 +203,17 @@ class Validator(object):
         assert data['contracted']['nif'], "Contracted's nif is empty"
         assert data['contracted']['name'], "Contracted's name is empty"
 
-        data = self.convert(data)
-
-        return data
-
-    def convert(self, data):
-        data['issued_at'] = parse_date(data['issued_at'])
-        data['awarded_at'] = parse_date(data['awarded_at'])
-
         return data
 
 
 class Parser(object):
-
     def __init__(self, content):
         content = self.prepare_content(content)
-        document = self.prepare_document(content)
-
-        if self.document_type(document) != 'ContractAwardNotice':
-            raise ValueError("Unkown document type")
-
-        namespaces = self.prepare_namespaces(document)
-        self.extractor = self.prepare_extractor(document, namespaces)
+        self.document = self.prepare_document(content)
+        self.version = self.get_version(self.document)
+        self.type = self.get_document_type(self.document)
+        self.namespaces = self.prepare_namespaces(self.document)
+        self.impl = self.prepare_impl(self.document, self.namespaces)
 
     def prepare_document(self, content):
         return etree.fromstring(content)
@@ -230,25 +234,22 @@ class Parser(object):
 
         return namespaces
 
-    def prepare_extractor(self, document, namespaces):
-        version = self.version(document)
+    def prepare_impl(self, document, namespaces):
+        Parser = {
+            None: Codice1Parser,
+            'CODICE 2.0': Codice2Parser,
+            'CODICE 2.01': Codice2Parser
+        }.get(self.version)
+        return Parser(document, namespaces)
 
-        Extractor = {
-            None: Codice1Extractor,
-            'CODICE 2.0': Codice2Extractor,
-            'CODICE 2.01': Codice2Extractor
-        }[version]
-
-        return Extractor(document, namespaces)
-
-    def version(self, document):
+    def get_version(self, document):
         return first(document.xpath('*[local-name() = "CustomizationID"]/text()'))
 
-    def document_type(self, document):
+    def get_document_type(self, document):
         return document.tag.split('}')[-1]
 
     def parse(self):
-        return self.extractor.parse()
+        return self.impl.parse()
 
 
 def first(elements):
@@ -263,46 +264,52 @@ def to_float(number):
         return None
 
 
-def get_store():
-    return y_serial.Main('tmp.sqlite')
+def get_store(database):
+    return Store(database)
 
 
-def parse(store, validator):
-    errors, discarted, parsed = 0, 0, 0
-    for n, (timestamp, key, value) in store.iterselectdic('.*', table='raw'):
-        try:
-            yield validator.validate(Parser(value).parse())
-        except (ValueError, AssertionError) as error:
-            if str(error) in ("Not Successful", "Unkown document type"):
-                discarted += 1
-            else:
-                print('ignoring', key)
-                print error
-                errors += 1
-        else:
-            parsed += 1
+def iteritems(store):
+    for key in store.keys():
+        yield key, store.get(key)
 
 
-def main():
-    store = get_store()
-    session = get_session()
-    validator = Validator()
+def is_valid_document(parser):
+    return parser.type == 'ContractAwardNotice'
 
-    inserted, rejected = 0, 0
 
-    for data in parse(store, validator):
-        if create_licitation(session, data):
+def parse(store):
+    for key, content in iteritems(store):
+        document = Parser(content)
+        if is_valid_document(document):
+            yield validate(document.parse())
+
+
+def _log_parsing_progress(*counters):
+    logger.info(
+        'Inserted: %d Ignored: %d Rejected: %d Total: %d of %d', *counters)
+
+
+def parse_documents(store_path, database_path):
+    store = get_store(store_path)
+    database = get_session(database_path)
+
+    total = len(store)
+    inserted, ignored, rejected, progress = 0, 0, 0, 0
+    for data in parse(store):
+        progress += 1
+
+        if data is None:
+            rejected += 1
+        elif Licitation.create(database, data):
             inserted += 1
         else:
-            rejected += 1
+            ignored += 1
 
-        sys.stdout.write("\bInserted: {} Rejected: {} Total: {}\r"
-                         .format(inserted, rejected, inserted + rejected))
-        sys.stdout.flush()
+        if total % 100:
+            _log_parsing_progress(inserted, ignored, rejected, progress, total)
 
-    print("Inserted: {} Rejected: {} Total: {}"
-          .format(inserted, rejected, inserted + rejected))
-
+    _log_parsing_progress(inserted, ignored, rejected, progress, total)
+    logger.info('finished')
 
 if __name__ == "__main__":
     main()

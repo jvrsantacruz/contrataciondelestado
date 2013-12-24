@@ -1,48 +1,40 @@
-#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import logging
 
+from dateutil.parser import parse as parse_date
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, Unicode, DateTime, Float, ForeignKey, create_engine
 
 
 Base = declarative_base()
+logger = logging.getLogger('models')
 
 
-def get_session():
-    engine = create_engine('sqlite:///db.sqlite')
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
+class Party(Base):
+    __tablename__ = "parties"
 
-    return Session()
+    id = Column(Integer(), primary_key=True)
+    nif = Column(Unicode(), unique=True)
+    name = Column(Unicode())
+    uri = Column(Unicode())
 
+    @staticmethod
+    def get_by_nif(session, nif):
+        return session.query(Party).filter_by(nif=nif).first()
 
-def create_licitation(session, data):
-    try:
-        if licitation_exists(session, data['uuid']):
-            return False
+    @staticmethod
+    def get_or_create(session, party):
+        return Party.get_by_nif(session, party['nif']) or Party(**party)
 
-        data['contractor'] = get_or_create_party(session, data['contractor'])
-        data['contracted'] = get_or_create_party(session, data['contracted'])
-
-        session.add(Licitation(**data))
-        session.commit()
-    except Exception as error:
-        session.rollback()
-        print error
-    else:
-        return True
-
-
-def get_or_create_party(session, party):
-    return (session.query(Party).filter_by(nif=party['nif']).first()
-            or Party(**party))
-
-
-def licitation_exists(session, uuid):
-    by_uuid = session.query(Licitation).filter_by(uuid=uuid)
-    return session.query(by_uuid.exists()).scalar()
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nif': self.nif,
+            'name': self.name,
+            'uri': self.uri
+        }
 
 
 class Licitation(Base):
@@ -76,16 +68,68 @@ class Licitation(Base):
     contracted = relationship("Party",
                               primaryjoin="Licitation.contracted_id==Party.id")
 
+    @staticmethod
+    def count(session):
+        return session.query(Licitation).count()
 
-class Party(Base):
-    __tablename__ = "parties"
-    __mapper_args__ = {'polymorphic_identity': 'party'}
+    @staticmethod
+    def get_by_uuid(session, uuid):
+        return session.query(Licitation).filter_by(uuid=uuid).first()
 
-    id = Column(Integer(), primary_key=True)
-    nif = Column(Unicode(), unique=True)
-    name = Column(Unicode())
-    uri = Column(Unicode())
+    @staticmethod
+    def exists(session, uuid):
+        by_uuid = session.query(Licitation).filter_by(uuid=uuid)
+        return session.query(by_uuid.exists()).scalar()
+
+    @staticmethod
+    def create(session, data):
+        if Licitation.exists(session, data.get('uuid')):
+            return False
+
+        try:
+            data['issued_at'] = parse_date(data['issued_at'])
+            data['awarded_at'] = parse_date(data['awarded_at'])
+            data['contractor'] = Party.get_or_create(session, data['contractor'])
+            data['contracted'] = Party.get_or_create(session, data['contracted'])
+
+            licitation = Licitation(**data)
+            session.add(licitation)
+            session.commit()
+
+            return licitation
+        except Exception as error:
+            logger.error(error)
+            session.rollback()
+        else:
+            return True
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'uuid': self.uuid,
+            'file': self.file,
+            'result_code': self.result_code,
+            'uri': self.uri,
+            'title': self.title,
+            'amount': self.amount,
+            'payable_amount': self.payable_amount,
+            'issued_at': self.issued_at.isoformat('T')
+            if self.issued_at is not None else None,
+            'awarded_at': self.awarded_at.isoformat('T')
+            if self.issued_at is not None else None,
+            'contractor': self.contractor.to_dict()
+            if self.contractor is not None else None,
+            'contracted': self.contracted.to_dict()
+            if self.contractor is not None else None,
+        }
 
 
-if __name__ == "__main__":
-    get_session()
+def get_session(database):
+    engine = create_engine('sqlite:///' + database)
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+
+    return Session()
+
+
+

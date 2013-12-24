@@ -14,9 +14,12 @@ from argparse import ArgumentParser
 import requests
 from pyquery import PyQuery
 from gevent.pool import Pool
-import y_serial_v060 as y_serial
+
+from store import Store
 
 _LOGGING_FMT_ = '%(asctime)s %(levelname)-8s %(message)s'
+
+logger = logging.getLogger('fetcher')
 
 
 def serialize(element):
@@ -65,10 +68,10 @@ class Fetcher(object):
     host = "https://contrataciondelestado.es"
     main_url = urljoin(host, "/wps/portal/plataforma")
 
-    def __init__(self, page=None):
+    def __init__(self, store, page=None):
+        self.store = store
         self.pool = Pool(10)
         self.session = requests.Session()
-        self.store = y_serial.Main('tmp.sqlite')
         self.start_page = page if page is not None else 1
 
     def run(self):
@@ -91,7 +94,7 @@ class Fetcher(object):
             if details:
                 self.pool.map(self.fetch_data_document, details)
 
-        logging.info("Page {}".format(page))
+        logger.info("Page {}".format(page))
         return next
 
     def fetch_list_page(self, request):
@@ -133,14 +136,13 @@ class Fetcher(object):
         return self.request(url)
 
     def fetch_data(self, request):
-        if self.store.select(request.url, 'raw'):
-            logging.warning('Already stored ' + request.url)
+        if request.url in self.store:
+            logger.warning('Already stored ' + request.url)
             return
 
         response = self.send(request)
-        self.store.insert(response.text, response.url, 'raw')
-
-        logging.info('Stored ' + response.url)
+        self.store.put(response.url, response.text)
+        logger.info('Stored ' + response.url)
 
     def request(self, url, data=None):
         method = 'GET' if data is None else 'POST'
@@ -156,26 +158,12 @@ class Fetcher(object):
         return urljoin(self.host, url)
 
     def send(self, request):
-        logging.info(request)
+        logger.debug(request.method + ' ' + request.url)
         response = self.session.send(request, verify=False)
         return response
 
 
-def parse_args():
-    parser = ArgumentParser(usage="%(prog)s [options] ARG ARG")
-
-    parser.add_argument("--page", default=None, type=int)
-
-    return parser.parse_args()
-
-
-def main():
-    logging.basicConfig(level=logging.INFO, format=_LOGGING_FMT_)
-
-    args = parse_args()
-
-    Fetcher(page=args.page).run()
-
-
-if __name__ == "__main__":
-    main()
+def fetch_documents(store_path, page):
+    store = Store(store_path)
+    fetcher = Fetcher(store=store, page=page)
+    fetcher.run()
