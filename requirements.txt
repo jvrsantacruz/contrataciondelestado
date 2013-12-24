@@ -1,0 +1,8 @@
+docopt
+gevent
+pyquery
+simplekv
+requests
+cssselect
+SQLAlchemy
+python-dateutil
