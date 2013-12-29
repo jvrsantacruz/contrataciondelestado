@@ -7,11 +7,10 @@ import logging
 from contextlib import contextmanager
 
 from lxml import etree
-import y_serial_v060 as y_serial
 
-from store import Store
-from validators import validate
-from models import get_session, Licitation
+from .store import Store
+from .validators import validate
+from .models import get_session, Licitation
 
 
 logger = logging.getLogger('parser')
