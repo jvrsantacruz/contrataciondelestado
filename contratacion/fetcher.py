@@ -34,8 +34,8 @@ def serialize(element):
 
 
 def serialize_select(select):
-        return (select('option[selected="selected"]:first')
-                or select('option:first')).val()
+    return (select('option[selected="selected"]:first')
+            or select('option:first')).val()
 
 
 def serializeArray(form):
