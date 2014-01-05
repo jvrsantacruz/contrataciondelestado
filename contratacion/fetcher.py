@@ -54,6 +54,47 @@ def submit(input):
     return action, dict(chain(serializeArray(form), [serialize(input)]))
 
 
+class Sender(object):
+    """Manages request creation and sending"""
+
+    def __init__(self):
+        self.session = requests.Session()
+
+    def request(self, url, data=None):
+        """Create a prepared request ready to pass to fetch/send methods
+
+        The default method is GET but It will create a
+        POST request instead if data is set.
+
+        :param url: Request's url
+        :param data: Optional data dictionary
+        :rtype: :class:`requests.Request` object.
+        """
+        method = 'GET' if data is None else 'POST'
+        return requests.Request(
+            method, url, data=data, cookies=self.session.cookies
+        ).prepare()
+
+    def fetch(self, request):
+        """Send a prepared request and get the response parsed by PyQuery
+
+        :param request: Prepared request ready to send.
+        :rtype: :class:`PyQuery` object.
+        """
+        response = self.send(request)
+        return PyQuery(response.text)
+
+    def send(self, request):
+        """Send the request and get the response
+
+        :param request: Prepared request ready to send.
+        :rtype: :class:`requests.Response` object.
+        """
+        logger.debug("%s %s", request.method, request.url)
+        response = self.session.send(request, verify=False)
+        return response
+
+
 class Fetcher(object):
     """Fetching of xml documents from contrataciondelestado.es
 
@@ -71,7 +112,7 @@ class Fetcher(object):
     def __init__(self, store, page=None):
         self.store = store
         self.pool = Pool(10)
-        self.session = requests.Session()
+        self.sender = Sender()
         self.start_page = page if page is not None else 1
 
     def run(self):
@@ -145,22 +186,16 @@ class Fetcher(object):
         logger.info('Stored ' + response.url)
 
     def request(self, url, data=None):
-        method = 'GET' if data is None else 'POST'
-        return requests.Request(
-            method, url, data=data, cookies=self.session.cookies
-        ).prepare()
+        return self.sender.request(url, data)
 
     def fetch(self, request):
-        response = self.send(request)
-        return PyQuery(response.text)
+        return self.sender.fetch(request)
 
     def uri(self, url):
         return urljoin(self.host, url)
 
     def send(self, request):
-        logger.debug(request.method + ' ' + request.url)
-        response = self.session.send(request, verify=False)
-        return response
+        return self.sender.send(request)
 
 
 def fetch_documents(store_path, page):
