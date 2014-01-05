@@ -122,6 +122,10 @@ class Fetcher(object):
             next = self.fetch_page(next)
 
     def fetch_main_page(self):
+        """Load main url, obtain session cookie and url for 1 page
+
+        :returns: Prepared request for page 1
+        """
         d = self.fetch(self.request(self.main_url))
 
         url = d('#tabla_liciResueltas + div a').attr('href')
@@ -129,6 +133,11 @@ class Fetcher(object):
         return self.request(self.uri(url))
 
     def fetch_page(self, request):
+        """Load all data in a result page
+
+        :param request: Prepared request for the nth page of results.
+        :returns: Prepared request for page n + 1 if any
+        """
         details, page, next = self.fetch_list_page(request)
 
         if page >= self.start_page:
@@ -139,6 +148,13 @@ class Fetcher(object):
         return next
 
     def fetch_list_page(self, request):
+        """Load and parse the list of links in a result page
+
+        :param request: Prepared request for page of results.
+        :returns: `(details, page, next)` where `details` is the list of
+         results (links) in the page, `page` is the number of the current page,
+         and next is a prepared request for that page.
+        """
         d = self.fetch(request)
 
         details = [self.request(self.uri(a.get('href')))
@@ -153,6 +169,19 @@ class Fetcher(object):
         return details, page, next
 
     def fetch_data_document(self, request):
+        """Fetch an specific document
+
+        # Link in results page
+        # goes to detail page
+        # Link in detail page
+        # goes to data page page which
+        # is a redirection page which
+        # goes to data document which
+        # is finally stored
+
+        :param request: Prepared request for detail page.
+        :returns: Prepared request from the result list page.
+        """
         detail = self.fetch_detail_page(request)
         if detail:
             data = self.fetch_data_page(detail)
@@ -160,6 +189,11 @@ class Fetcher(object):
                 self.fetch_data(data)
 
     def fetch_detail_page(self, request):
+        """Fetch detail page and link for data document
+
+        :param request: Prepared request for detail page.
+        :returns: Prepared request for redirect page if any.
+        """
         d = self.fetch(request)
 
         url = d('.documentosPub:last a:contains("Xml")').attr('href')
@@ -168,6 +202,12 @@ class Fetcher(object):
             return self.request(url)
 
     def fetch_data_page(self, request, parser=re.compile(".*;url='([^']+)'")):
+        """Fetch redirect page which leds to a document.
+
+        :param request: Prepared request for data page.
+        :param parser: Regular expression for an html meta tag.
+        :returns: Prepared request for the data document file.
+        """
         d = self.fetch(request)
 
         meta = d('meta[http-equiv="refresh"]')
@@ -177,6 +217,10 @@ class Fetcher(object):
         return self.request(url)
 
     def fetch_data(self, request):
+        """Fetch a document file and store it if is new.
+
+        :param request: Prepared request for the data document.
+        """
         if request.url in self.store:
             logger.warning('Already stored ' + request.url)
             return
