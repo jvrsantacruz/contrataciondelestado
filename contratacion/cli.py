@@ -17,8 +17,6 @@ Options:
     --db FILE       Database file for processed data [default: db.sqlite]
     -v --verbose    Increase output verbosity level (Use -vv for debug level)
 """
-import logging
-
 from docopt import docopt
 
 from . import __version__
@@ -41,10 +39,10 @@ def parse_documents(args):
 
 
 def configure_logging(args):
-    verbosity = max(0, min(2, args.get('--verbose')))
-    levels = [logging.ERROR, logging.INFO, logging.DEBUG]
-    logging_format = '%(asctime)s %(levelname)-8s %(message)s'
-    logging.basicConfig(level=levels[verbosity], format=logging_format)
+    from . import log
+
+    verbosity = log.get_verbosity_level(args.get('--verbose'))
+    log.configure(level=verbosity)
 
 
 def main():

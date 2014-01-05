@@ -15,9 +15,7 @@ import requests
 from pyquery import PyQuery
 from gevent.pool import Pool
 
-from store import Store
-
-_LOGGING_FMT_ = '%(asctime)s %(levelname)-8s %(message)s'
+from .store import Store
 
 logger = logging.getLogger('fetcher')
 
