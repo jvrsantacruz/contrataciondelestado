@@ -40,14 +40,6 @@ def parse_documents(args):
     parser.parse_documents(store_path=store, database_path=db)
 
 
-def print_help():
-    print(__doc__)
-
-
-def print_version():
-    print('contratacion ' + __version__)
-
-
 def configure_logging(args):
     verbosity = max(0, min(2, args.get('--verbose')))
     levels = [logging.ERROR, logging.INFO, logging.DEBUG]
@@ -64,7 +56,3 @@ def main():
         fetch_documents(args)
     elif args['parse']:
         parse_documents(args)
-    elif args['--help']:
-        print_help()
-    elif args['--version']:
-        print_version()
