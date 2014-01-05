@@ -46,10 +46,18 @@ class Store(SQLAlchemyStore):
         value = super(Store, self).get(key)
         return self.decompress(value)
 
+    def get_file(self, key, file):
+        key = self.clean(key)
+        return super(Store, self).get_file(key)
+
     def put(self, key, value):
         key = self.clean(key)
         value = self.compress(value)
         return super(Store, self).put(key, value)
+
+    def put_file(self, key, file):
+        key = self.clean(key)
+        return super(Store, self).put_file(key, file)
 
     def delete(self, key):
         key = self.clean(key)
