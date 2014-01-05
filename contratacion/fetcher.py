@@ -6,6 +6,7 @@ from gevent import monkey
 monkey.patch_all()
 
 import re
+import time
 import logging
 from itertools import chain
 from urlparse import urljoin
@@ -52,10 +53,35 @@ def submit(input):
     return action, dict(chain(serializeArray(form), [serialize(input)]))
 
 
+class Profiler(object):
+    def __init__(self):
+        self.n = 0
+        self._start_time = None  # set on first access
+
+    @property
+    def start_time(self):
+        if self._start_time is None:
+            self._start_time = time.time()
+        return self._start_time
+
+    @property
+    def elapsed_time(self):
+        return time.time() - self.start_time
+
+    @property
+    def average(self):
+        return self.n / self.elapsed_time
+
+    def request_sent(self):
+        self.n += 1
+        logger.debug('Requests per second: %f (%d requests)', self.average, self.n)
+
+
 class Sender(object):
     """Manages request creation and sending"""
 
     def __init__(self):
+        self.profiler = Profiler()
         self.session = requests.Session()
 
     def request(self, url, data=None):
@@ -90,6 +116,7 @@ class Sender(object):
         """
         logger.debug("%s %s", request.method, request.url)
         response = self.session.send(request, verify=False)
+        self.profiler.request_sent()
         return response
 
 
