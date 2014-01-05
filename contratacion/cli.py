@@ -49,7 +49,7 @@ def print_version():
 
 
 def configure_logging(args):
-    verbosity = args.get('--verbose')
+    verbosity = max(0, min(2, args.get('--verbose')))
     levels = [logging.ERROR, logging.INFO, logging.DEBUG]
     logging_format = '%(asctime)s %(levelname)-8s %(message)s'
     logging.basicConfig(level=levels[verbosity], format=logging_format)
