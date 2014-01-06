@@ -255,11 +255,10 @@ class Fetcher(object):
         """
         return document('.documentosPub:last a:contains("Xml")').attr('href')
 
-    def fetch_data_page(self, request, parser=re.compile(".*;url='([^']+)'")):
+    def fetch_data_page(self, request):
         """Fetch redirect page which leds to a document.
 
         :param request: Prepared request for data page.
-        :param parser: Regular expression for an html meta tag.
         :returns: Prepared request for the data document file.
         """
         d = self.fetch(request)
@@ -269,6 +268,7 @@ class Fetcher(object):
         return self.request(self.uri(url))
 
     html_meta_parser = re.compile(".*;url='([^']+)'")
+    """Parses url in `<meta http-equiv="refresh" content="0;url='/wps/..'">`"""
 
     def get_html_meta_redirection_url(self, document):
         meta = document('meta[http-equiv="refresh"]')
