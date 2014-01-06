@@ -10,7 +10,6 @@ import time
 import logging
 from itertools import chain
 from urlparse import urljoin
-from argparse import ArgumentParser
 
 import requests
 from pyquery import PyQuery
@@ -153,9 +152,12 @@ class Fetcher(object):
         """
         d = self.fetch(self.request(self.main_url))
 
-        url = d('#tabla_liciResueltas + div a').attr('href')
+        url = self.get_link_to_first_page(d)
 
         return self.request(self.uri(url))
+
+    def get_link_to_first_page(self, document):
+        return document('#tabla_liciResueltas + div a').attr('href')
 
     def fetch_page(self, request):
         """Load all data in a result page
@@ -164,13 +166,15 @@ class Fetcher(object):
         :returns: Prepared request for page n + 1 if any
         """
         details, page, next = self.fetch_list_page(request)
-
-        if page >= self.start_page:
-            if details:
-                self.pool.map_async(self.fetch_data_document, details)
-
         logger.info("Page {}".format(page))
+
+        if details and self.should_get_page_details(page):
+            self.pool.map_async(self.fetch_data_document, details)
+
         return next
+
+    def should_get_page_details(self, page):
+        return page >= self.start_page
 
     def fetch_list_page(self, request):
         """Load and parse the list of links in a result page
@@ -178,20 +182,29 @@ class Fetcher(object):
         :param request: Prepared request for page of results.
         :returns: `(details, page, next)` where `details` is the list of
          results (links) in the page, `page` is the number of the current page,
-         and next is a prepared request for that page.
+         and `next` is a prepared request for that page.
         """
         d = self.fetch(request)
-
-        details = [self.request(self.uri(a.get('href')))
-                   for a in d('.tdidExpedienteWidth a')
-                   if a is not None]
-
-        page = int(d('[id*="textNumPag"]').text())
-
-        action, data = submit(d('input[id*="siguienteLink"]'))
-        next = self.request(self.uri(action), data) if data else None
-
+        page = self.get_page_number(d)
+        next = self.get_request_to_next_list_page(d)
+        urls = self.get_links_to_detail_page(d)
+        details = self.get_requests_to_detail_page(urls)
+        logger.debug('Page %d contains %d details: %s', page, len(urls), urls)
         return details, page, next
+
+    def get_requests_to_detail_page(self, urls):
+        return [self.request(self.uri(url)) for url in urls]
+
+    def get_links_to_detail_page(self, document):
+        links = document('.tdidExpedienteWidth a')
+        return [link.get('href') for link in links if link is not None]
+
+    def get_page_number(self, document):
+        return int(document('[id*="textNumPag"]').text())
+
+    def get_request_to_next_list_page(self, document):
+        action, data = submit(document('input[id*="siguienteLink"]'))
+        return self.request(self.uri(action), data) if data else None
 
     def fetch_data_document(self, request):
         """Fetch an specific document
@@ -208,10 +221,14 @@ class Fetcher(object):
         :returns: Prepared request from the result list page.
         """
         detail = self.fetch_detail_page(request)
-        if detail:
+        if detail is not None:
             data = self.fetch_data_page(detail)
-            if data:
+            if data is not None:
                 self.fetch_data(data)
+            else:
+                logger.error('Could not fetch data page: %s', detail.url)
+        else:
+            logger.error('Could not fetch detail page: %s', request.url)
 
     def fetch_detail_page(self, request):
         """Fetch detail page and link for data document
@@ -221,10 +238,17 @@ class Fetcher(object):
         """
         d = self.fetch(request)
 
-        url = d('.documentosPub:last a:contains("Xml")').attr('href')
+        url = self.get_most_recent_xml_link_from_detail_page(d)
 
         if url is not None:
             return self.request(url)
+
+    def get_most_recent_xml_link_from_detail_page(self, document):
+        """Get the most recent xml document from the detail
+
+        Xml documents in detail page are sorted by date.
+        """
+        return document('.documentosPub:last a:contains("Xml")').attr('href')
 
     def fetch_data_page(self, request, parser=re.compile(".*;url='([^']+)'")):
         """Fetch redirect page which leds to a document.
@@ -235,11 +259,17 @@ class Fetcher(object):
         """
         d = self.fetch(request)
 
-        meta = d('meta[http-equiv="refresh"]')
-        content = parser.match(meta.attr('content'))
-        url = self.uri(content.group(1))
+        url = self.get_html_meta_redirection_url(d)
 
-        return self.request(url)
+        return self.request(self.uri(url))
+
+    html_meta_parser = re.compile(".*;url='([^']+)'")
+
+    def get_html_meta_redirection_url(self, document):
+        meta = document('meta[http-equiv="refresh"]')
+        content = self.html_meta_parser.match(meta.attr('content'))
+        url = content.group(1)
+        return url
 
     def fetch_data(self, request):
         """Fetch a document file and store it if is new.
