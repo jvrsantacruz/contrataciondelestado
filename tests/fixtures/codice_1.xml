@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContractAwardNotice xmlns="urn:dgpe:names:draft:codice:schema:xsd:ContractAwardNotice-1">
+    <cbc:UUID xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2008-002958</cbc:UUID>
+    <cbc:ContractFileID xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">006/08</cbc:ContractFileID>
+    <cbc:IssueDate xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2008-08-04+02:00</cbc:IssueDate>
+    <cbc:IssueTime xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">13:09:17.348+02:00</cbc:IssueTime>
+    <cac:ContractingAuthorityParty xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-1">
+        <cbc:TypeCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/ContractingAuthorityCode-1.04.gc" listVersionID="2006" name="Administración General del Estado" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">1</cbc:TypeCode>
+        <cbc:ActivityTypeCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/ContractingAuthorityActivityCode-1.04.gc" listVersionID="2006" name="Agricultura, Pesca y Alimentación" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">15</cbc:ActivityTypeCode>
+        <cbc:RoleCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/RoleCode-1.04.gc" listVersionID="2006" name="Órgano de Contratación" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">1</cbc:RoleCode>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="CIF" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Q2829010D</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="ID_PLATAFORMA" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">10000320000378</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Fondo de Regulación y Organización del Mercado de los Productos de la Pesca y Cultivos Marinos (FROM)</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/Place_AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">1</cbc:AddressFormatCode>
+                <cbc:CityName xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Madrid</cbc:CityName>
+                <cbc:PostalZone xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">28002</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Corazón de María 8</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">ES</cbc:IdentificationCode>
+                    <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Fondo de Regulación y Organización del Mercado de los Productos de la Pesca y Cultivos Marinos (FROM)</cbc:Name>
+                <cbc:Telephone xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">913473640</cbc:Telephone>
+                <cbc:Telefax xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">913473629</cbc:Telefax>
+                <cbc:ElectronicMail xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">from@mapya.es</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:JobTitle xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Presidente</cbc:JobTitle>
+            </cac:Person>
+        </cac:Party>
+    </cac:ContractingAuthorityParty>
+    <cac:TenderResult xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-1">
+        <cbc:ResultCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/TenderResultCode-1.04.gc" listVersionID="2006" name="Adjudicado Definitivamente" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2</cbc:ResultCode>
+        <cbc:Description xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">RESOLUCIÓN DE LA PRESIDENCIA DEL FONDO DE REGULACIÓN Y ORGANIZACIÓN DE LOS PRODUCTOS DE LA PESCA Y CULTIVOS MARINOS (FROM), DE 1 DE AGOSTO DE 2008 POR LA QUE SE ACUERDA LA ADJUDICACIÓN DEFINITIVA DEL CONTRATO DE PLANIFICACIÓN E INSERCIÓN EN EL MEDIO TELEVISIÓN DE LAS CAMPAÑAS DE PUBLICIDAD DEL FROM DURANTE EL AÑO 2008.
+
+Adoptada resolución de adjudicación provisional, en fecha, 21 de julio de 2008, y habiendo transcurrido el plazo previsto en la  Ley de Contratos del Sector Público para la presentación de recursos contra dicha adjudicación sin que se haya presentado ninguna, esta Presidencia en virtud de las atribuciones que tiene conferidas, resuelve elevar a definitiva dicha adjudicación del contrato para la planificación e inserción en el medio televisión de las campañas de publicidad del FROM durante el año 2008, a la empresa ICEBERG MEDIA, S.A., por un importe de CINCO MILLONES DE EUROS (5.000.000 €), IVA incluido, correspondiendo al concepto 640 del vigente Presupuesto de gastos de este Organismo. El importe total está cofinanciado por la U.E. a través del Fondo Europeo de Pesca (FEP).  
+
+
+				Madrid, 1 de agosto de 2008
+					EL PRESIDENTE,
+
+
+
+
+				Juan Carlos Martín Fragueiro
+
+</cbc:Description>
+        <cbc:AwardPriceAmount currencyID="EUR" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">5000000</cbc:AwardPriceAmount>
+        <cbc:AwardDate xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2008-08-01+02:00</cbc:AwardDate>
+        <cbc:AwardTime xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">00:00:00+02:00</cbc:AwardTime>
+        <cac:WinnerParty>
+            <cac:PartyIdentification>
+                <cbc:ID xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">A78688918</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">ICEBERG MEDIA, S.A.</cbc:Name>
+            </cac:PartyName>
+        </cac:WinnerParty>
+        <cac:ProcuringProject>
+            <cbc:ContractName xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">PLANIFICACIÓN E INSERCIÓN EN EL MEDIO TELEVISIÓN DE LAS CAMPAÑAS PUBLICITARIAS DEL FROM DURANTE EL AÑO 2008</cbc:ContractName>
+            <cbc:TypeCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/TenderingContractCode-1.04.gc" listVersionID="2006" name="Servicios" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2</cbc:TypeCode>
+            <cbc:SubTypeCode languageID="es" listURI="http://dgpe.minhac.es/codice/clv/TenderingServiceContractCode-1.04.gc" listVersionID="2006" name="Servicios de publicidad" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">13</cbc:SubTypeCode>
+            <cbc:GPAConstraintIndicator xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">false</cbc:GPAConstraintIndicator>
+            <cbc:VariantsConstraintIndicator xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">false</cbc:VariantsConstraintIndicator>
+            <cbc:TotalBudgetAmount currencyID="EUR" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">5000000</cbc:TotalBudgetAmount>
+            <cac:RequiredClassificationScheme>
+                <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">CPV</cbc:Name>
+                <cbc:AgencyName xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Dirección General del Patrimonio del Estado</cbc:AgencyName>
+                <cbc:VersionID xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2003</cbc:VersionID>
+                <cbc:URI xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">http://dgpe.minhac.es/codice/clv/CPV2003-1.04.gc</cbc:URI>
+                <cbc:SchemeURI xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">urn:dgpe:names:draft:codice:codelist:gc:CPV2003-1.04</cbc:SchemeURI>
+                <cbc:LanguageID xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Español</cbc:LanguageID>
+                <cac:ClassificationCategory>
+                    <cbc:Name xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Elemento CPV</cbc:Name>
+                    <cbc:CodeValue xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">74410000</cbc:CodeValue>
+                    <cbc:Description xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">Servicios de publicidad.</cbc:Description>
+                </cac:ClassificationCategory>
+            </cac:RequiredClassificationScheme>
+            <cac:PlannedPeriod>
+                <cbc:EndDate xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-1">2008-12-31+01:00</cbc:EndDate>
+            </cac:PlannedPeriod>
+        </cac:ProcuringProject>
+        <cac:Subcontract/>
+    </cac:TenderResult>
+</ContractAwardNotice>
+

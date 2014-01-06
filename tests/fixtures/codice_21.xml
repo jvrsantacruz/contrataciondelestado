@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContractAwardNotice xmlns="urn:dgpe:names:draft:codice:schema:xsd:ContractAwardNotice-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2" xmlns:cac-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2">
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>CODICE 2.01</cbc:CustomizationID>
+    <cbc:ProfileID>CiP 1.8</cbc:ProfileID>
+    <cbc:ID>0000001458186</cbc:ID>
+    <cbc:UUID>2013-476016</cbc:UUID>
+    <cbc:ContractFolderID>500083004400</cbc:ContractFolderID>
+    <cbc:IssueDate>2013-06-07+02:00</cbc:IssueDate>
+    <cbc:IssueTime>13:03:50.832+02:00</cbc:IssueTime>
+    <cbc:Note>Habiéndose cumplido por el contratista lo dispuesto en el artículo 151.2 del Real Decreto Legislativo 3/2011, de 14 de noviembre, por el que se aprueba el Texto Refundido de la Ley de Contratos del Sector Público. Se adjudica a la empresa PRAXAIR ESPAÑA, SLU</cbc:Note>
+    <cac:ContractingParty>
+        <cbc:ContractingPartyTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc" listVersionID="2006" name="Administración General del Estado">1</cbc:ContractingPartyTypeCode>
+        <cbc:ActivityCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityActivityCode-1.04.gc" listVersionID="2006" name="Defensa">2</cbc:ActivityCode>
+        <cbc:BuyerProfileURIID>https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&amp;idBp=ovftscq8YCw%3D</cbc:BuyerProfileURIID>
+        <cac:Party>
+            <cbc:WebsiteURI>http://www.inta.es</cbc:WebsiteURI>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="ID_PLATAFORMA">10000140000734</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">Q2822003F</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Dirección General del INTA</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Torrejón de Ardoz, Madrid</cbc:CityName>
+                <cbc:PostalZone>28850</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Carretera de Ajalvir, Km 4</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:Name>Dirección General del INTA</cbc:Name>
+                <cbc:Telephone>915201776</cbc:Telephone>
+                <cbc:Telefax>915201787</cbc:Telefax>
+                <cbc:ElectronicMail>torrecn@inta.es</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:JobTitle>Director General</cbc:JobTitle>
+            </cac:Person>
+        </cac:Party>
+    </cac:ContractingParty>
+    <cac:TenderingTerms>
+        <cbc:RequiredCurriculaIndicator>false</cbc:RequiredCurriculaIndicator>
+        <cbc:VariantConstraintIndicator>false</cbc:VariantConstraintIndicator>
+        <cac:RequiredFinancialGuarantee>
+            <cbc:GuaranteeTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/GuaranteeTypeCode-1.04.gc" listVersionID="2006" name="Definitiva">2</cbc:GuaranteeTypeCode>
+            <cbc:AmountRate>5</cbc:AmountRate>
+        </cac:RequiredFinancialGuarantee>
+        <cac:TendererQualificationRequest>
+            <cac:TechnicalEvaluationCriteria>
+                <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/TechnicalCapabilityTypeCode-2.0.gc" listVersionID="2.0" name="Otros">ZZZ</cbc:EvaluationCriteriaTypeCode>
+                <cbc:Description>Conforme al  Pliego de Cláusulas Administrativas Particulares</cbc:Description>
+            </cac:TechnicalEvaluationCriteria>
+            <cac:FinancialEvaluationCriteria>
+                <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/FinancialCapabilityTypeCode-2.0.gc" listVersionID="2.0" name="Otros">ZZZ</cbc:EvaluationCriteriaTypeCode>
+                <cbc:Description>Conforme al  Pliego de Cláusulas Administrativas Particulares</cbc:Description>
+            </cac:FinancialEvaluationCriteria>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Capacidad de obrar">1</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="No prohibición para contratar">2</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="No estar incurso en incompatibilidades">3</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Cumplimiento con las obligaciones con la Seguridad Social">4</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Cumplimiento con las obligaciones tributarias">5</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+        </cac:TendererQualificationRequest>
+        <cac:AdditionalInformationParty>
+            <cac:PartyName>
+                <cbc:Name>Dirección General del INTA</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Torrejón de Ardoz, Madrid</cbc:CityName>
+                <cbc:PostalZone>28850</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Carretera de Ajalvir, Km 4</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:AdditionalInformationParty>
+        <cac:DocumentProviderParty>
+            <cac:PartyName>
+                <cbc:Name>Dirección General del INTA</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Torrejón de Ardoz, Madrid</cbc:CityName>
+                <cbc:PostalZone>28850</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Carretera de Ajalvir, Km 4</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:DocumentProviderParty>
+        <cac:TenderRecipientParty>
+            <cac:PartyName>
+                <cbc:Name>Dirección General del INTA</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Torrejón de Ardoz, Madrid</cbc:CityName>
+                <cbc:PostalZone>28850</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Carretera de Ajalvir, Km 4</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:TenderRecipientParty>
+        <cac:TenderValidityPeriod>
+            <cbc:DurationMeasure unitCode="MON">2</cbc:DurationMeasure>
+        </cac:TenderValidityPeriod>
+        <cac:Language>
+            <cbc:ID>es</cbc:ID>
+        </cac:Language>
+    </cac:TenderingTerms>
+    <cac:TenderingProcess>
+        <cbc:ProcedureCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.05/TenderingProcessCode-1.05.gc" listVersionID="1.05" name="Abierto">1</cbc:ProcedureCode>
+        <cbc:UrgencyCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc" listVersionID="2006" name="Ordinaria">1</cbc:UrgencyCode>
+        <cbc:ExpenseCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ExpenseTypeCode-1.04.gc" listVersionID="2006" name="Ordinaria">1</cbc:ExpenseCode>
+        <cbc:SubmissionMethodCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/TenderDeliveryCode-1.04.gc" listVersionID="2006" name="Manual">2</cbc:SubmissionMethodCode>
+        <cac:DocumentAvailabilityPeriod>
+            <cbc:EndDate>2013-04-25+02:00</cbc:EndDate>
+            <cbc:EndTime>14:00:00+02:00</cbc:EndTime>
+        </cac:DocumentAvailabilityPeriod>
+        <cac:TenderSubmissionDeadlinePeriod>
+            <cbc:EndDate>2013-04-25+02:00</cbc:EndDate>
+            <cbc:EndTime>14:00:00+02:00</cbc:EndTime>
+            <cbc:Description>En  los sobres se deberá indicar que van dirigidos a la Unidad de Gestión de Contratación y Adquisiciones</cbc:Description>
+        </cac:TenderSubmissionDeadlinePeriod>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>Detalle_Licitacion</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/TenderingDocumentTypeCode-2.02.gc" listVersionID="2.02" name="Documento de detalle del Expediente publicado en la Plataforma">LINK_EXP_PLACE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=m1Am01dBPxcQK2TEfXGy%2BA%3D%3D</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:OpenTenderEvent>
+            <cbc:OccurrenceDate>2013-05-07+02:00</cbc:OccurrenceDate>
+            <cbc:OccurrenceTime>10:30:00+02:00</cbc:OccurrenceTime>
+            <cbc:TypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.01/EventTypeCode-2.01.gc" listVersionID="2.01" name="Apertura sobre oferta económica">4</cbc:TypeCode>
+            <cac:OccurrenceLocation>
+                <cbc:Description>Instituto Nacional de Técnica Aeroespacial </cbc:Description>
+                <cac:Address>
+                    <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                    <cbc:CityName>Torrejón de Ardoz (Madrid)</cbc:CityName>
+                    <cbc:PostalZone>28850</cbc:PostalZone>
+                    <cac:AddressLine>
+                        <cbc:Line>Ctra. de Ajalvir Km. 4 </cbc:Line>
+                    </cac:AddressLine>
+                    <cac:Country>
+                        <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                        <cbc:Name>España</cbc:Name>
+                    </cac:Country>
+                </cac:Address>
+            </cac:OccurrenceLocation>
+        </cac:OpenTenderEvent>
+    </cac:TenderingProcess>
+    <cac:ProcurementProject>
+        <cbc:Name>Gases Industriales</cbc:Name>
+        <cbc:TypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/ContractCode-2.02.gc" listVersionID="2.02" name="Suministros">1</cbc:TypeCode>
+        <cbc:SubTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/GoodsContractCode-1.04.gc" listVersionID="2006" name="Adquisición">2</cbc:SubTypeCode>
+        <cac:BudgetAmount>
+            <cbc:TotalAmount currencyID="EUR">150887</cbc:TotalAmount>
+            <cbc:TaxExclusiveAmount currencyID="EUR">124700</cbc:TaxExclusiveAmount>
+        </cac:BudgetAmount>
+        <cac:RequiredCommodityClassification>
+            <cbc:ItemClassificationCode listName="CPV" listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc" listVersionID="2007" name="Productos químicos.">24000000</cbc:ItemClassificationCode>
+        </cac:RequiredCommodityClassification>
+        <cac:RequiredCommodityClassification>
+            <cbc:ItemClassificationCode listName="CPV" listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc" listVersionID="2007" name="Gases.">24100000</cbc:ItemClassificationCode>
+        </cac:RequiredCommodityClassification>
+        <cac:RealizedLocation>
+            <cbc:CountrySubentity>ESPAÑA</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.0/NUTS-2009.gc" listVersionID="2009" name="ESPAÑA">ES</cbc:CountrySubentityCode>
+            <cac:Address>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:Address>
+        </cac:RealizedLocation>
+    </cac:ProcurementProject>
+    <cac:TenderResult>
+        <cbc:ResultCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/TenderResultCode-2.02.gc" listVersionID="2.02" name="Adjudicado">8</cbc:ResultCode>
+        <cbc:Description>Por haber obtenido la mayor puntuación
+
+</cbc:Description>
+        <cbc:AwardDate>2013-06-05+02:00</cbc:AwardDate>
+        <cbc:AwardTime>00:00:00+02:00</cbc:AwardTime>
+        <cac:WinningParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">B28062339</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>PRAXAIR ESPAÑA, SLU</cbc:Name>
+            </cac:PartyName>
+        </cac:WinningParty>
+        <cac:AwardedTenderedProject>
+            <cac:LegalMonetaryTotal>
+                <cbc:TaxExclusiveAmount currencyID="EUR">124700</cbc:TaxExclusiveAmount>
+                <cbc:PayableAmount currencyID="EUR">150887</cbc:PayableAmount>
+            </cac:LegalMonetaryTotal>
+        </cac:AwardedTenderedProject>
+        <cac:ContractFormalizationPeriod>
+            <cbc:StartDate>2013-06-08+02:00</cbc:StartDate>
+            <cbc:EndDate>2013-06-25+02:00</cbc:EndDate>
+        </cac:ContractFormalizationPeriod>
+    </cac:TenderResult>
+</ContractAwardNotice>
+

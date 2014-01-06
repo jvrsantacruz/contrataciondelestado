@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContractAwardNotice xmlns="urn:dgpe:names:draft:codice:schema:xsd:ContractAwardNotice-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2" xmlns:cac-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2">
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>CODICE 2.01</cbc:CustomizationID>
+    <cbc:ProfileID>CiP 1.7</cbc:ProfileID>
+    <cbc:ID>DEF63001506072013122327</cbc:ID>
+    <cbc:UUID>2013-475971</cbc:UUID>
+    <cbc:ContractFolderID>4630013001500</cbc:ContractFolderID>
+    <cbc:IssueDate>2013-06-07+02:00</cbc:IssueDate>
+    <cbc:IssueTime>12:23:30.625+02:00</cbc:IssueTime>
+    <cbc:Note>Se acuerda la Adjudicación a Empresa ELECTRICIDAD FERYSAN, S.A.</cbc:Note>
+    <cac:MinutesDocumentReference>
+        <cbc:ID>RESOLUCION DE ADJUDICACION.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=f2aef0a9-e608-4f20-8410-601655e31704</cbc:URI>
+                <cbc:DocumentHash>RI11LeF5RkNajJsfjEQPcWyAzjQ=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:MinutesDocumentReference>
+    <cac:ContractingParty>
+        <cbc:ContractingPartyTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc" listVersionID="2006" name="Administración General del Estado">1</cbc:ContractingPartyTypeCode>
+        <cbc:ActivityCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityActivityCode-1.04.gc" listVersionID="2006" name="Defensa">2</cbc:ActivityCode>
+        <cbc:BuyerProfileURIID>https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&amp;idBp=OO85cNKSpLw%3D</cbc:BuyerProfileURIID>
+        <cac:Party>
+            <cbc:WebsiteURI>http://www.ejercitodelaire.mde.es/Contratacion</cbc:WebsiteURI>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="ID_PLATAFORMA">10000140000222</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">S3030051A</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Jefatura de la Sección Económico-Administrativa 63 - Base Aérea de Alcantarilla</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Alcantarilla</cbc:CityName>
+                <cbc:PostalZone>30820</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Base Aérea de Alcantarilla, Avda. de Lorca, s/n</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:Name>Jefatura de la Sección Económico-Administrativa 63 - Base Aérea de Alcantarilla</cbc:Name>
+                <cbc:Telephone>968397224</cbc:Telephone>
+                <cbc:Telefax>968397244</cbc:Telefax>
+                <cbc:ElectronicMail>sea63contratacion@ea.mde.es</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:JobTitle>Jefe de la Sección Económico-Administrativa 63</cbc:JobTitle>
+            </cac:Person>
+        </cac:Party>
+    </cac:ContractingParty>
+    <cac:TenderingProcess>
+        <cbc:ProcedureCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.05/TenderingProcessCode-1.05.gc" listVersionID="1.05" name="Negociado sin publicidad">3</cbc:ProcedureCode>
+        <cbc:UrgencyCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc" listVersionID="2006" name="Ordinaria">1</cbc:UrgencyCode>
+        <cbc:ExpenseCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ExpenseTypeCode-1.04.gc" listVersionID="2006" name="Ordinaria">1</cbc:ExpenseCode>
+        <cbc:GovernmentProcurementAgreementConstraintIndicator>false</cbc:GovernmentProcurementAgreementConstraintIndicator>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>Detalle_Licitacion</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/TenderingDocumentTypeCode-2.02.gc" listVersionID="2.02" name="Documento de detalle del Expediente publicado en la Plataforma">LINK_EXP_PLACE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=LtkBIEICQxcQK2TEfXGy%2BA%3D%3D</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:ProcessJustification>
+            <cbc:ReasonCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/ProcessJustificationReasonCode-2.0.gc" listVersionID="2.0" name="Se solicitan obras/suministros/servicios adicionales con arreglo a las condiciones establecidas en la Directiva                                                                                                                                                ">e</cbc:ReasonCode>
+        </cac:ProcessJustification>
+        <cac:ProcessJustification>
+            <cbc:Description>SERV.  NEG.S/PUB.IMP. INF.100.000.-EUR174-e TRLCSP</cbc:Description>
+        </cac:ProcessJustification>
+    </cac:TenderingProcess>
+    <cac:ProcurementProject>
+        <cbc:Name>Servicio de Conservación y Mantenimiento de Las Instalaciones Térmicas de la Base Aérea de Alcantarilla</cbc:Name>
+        <cbc:TypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/ContractCode-2.02.gc" listVersionID="2.02" name="Servicios">2</cbc:TypeCode>
+        <cbc:SubTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ServiceContractCode-1.04.gc" listVersionID="2006" name="Servicios de mantenimiento y reparación">1</cbc:SubTypeCode>
+        <cac:BudgetAmount>
+            <cbc:TotalAmount currencyID="EUR">24000.00</cbc:TotalAmount>
+            <cbc:TaxExclusiveAmount currencyID="EUR">19834.71</cbc:TaxExclusiveAmount>
+        </cac:BudgetAmount>
+        <cac:RequiredCommodityClassification>
+            <cbc:ItemClassificationCode listName="CPV" listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc" listVersionID="2007" name="Servicios de reparación y mantenimiento.">50000000</cbc:ItemClassificationCode>
+        </cac:RequiredCommodityClassification>
+        <cac:RealizedLocation>
+            <cbc:Description>GRUPO DE APOYO</cbc:Description>
+            <cbc:CountrySubentity>ESPAÑA</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.0/NUTS-2009.gc" listVersionID="2009" name="ESPAÑA">ES</cbc:CountrySubentityCode>
+        </cac:RealizedLocation>
+        <cac:PlannedPeriod>
+            <cbc:DurationMeasure unitCode="MON">8</cbc:DurationMeasure>
+            <cbc:Description>OCHO MESES</cbc:Description>
+        </cac:PlannedPeriod>
+    </cac:ProcurementProject>
+    <cac:TenderResult>
+        <cbc:ResultCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.01/TenderResultCode-2.01.gc" listVersionID="2.01" name="Adjudicado">8</cbc:ResultCode>
+        <cbc:Description>Por Obtener la Mayor Puntuación en la Aplicación de los Criterios de Valoración y Cumplir los Requisitos Exigidos en los Pliegos Que Rigen Este Expediente</cbc:Description>
+        <cbc:AwardDate>2013-05-28+01:00</cbc:AwardDate>
+        <cbc:AwardTime>00:00:00+01:00</cbc:AwardTime>
+        <cac:WinningParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">A30033385</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>ELECTRICIDAD FERYSAN, S.A.</cbc:Name>
+            </cac:PartyName>
+        </cac:WinningParty>
+        <cac:AwardedTenderedProject>
+            <cac:LegalMonetaryTotal>
+                <cbc:TaxExclusiveAmount currencyID="EUR">17000.00</cbc:TaxExclusiveAmount>
+                <cbc:PayableAmount currencyID="EUR">20570.00</cbc:PayableAmount>
+            </cac:LegalMonetaryTotal>
+        </cac:AwardedTenderedProject>
+        <cac:ContractFormalizationPeriod>
+            <cbc:Description>La formalización del contrato se efectuará conforme al plazo establecido en el artículo 156, apartado 3, del Texto Refundido de la Ley de Contratos del Sector Público.</cbc:Description>
+        </cac:ContractFormalizationPeriod>
+    </cac:TenderResult>
+</ContractAwardNotice>
+
