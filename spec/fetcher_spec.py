@@ -2,6 +2,8 @@
 
 import urllib
 
+import responses
+from mock import Mock, MagicMock
 from expects import expect
 from mamba import describe, context, before
 
@@ -11,7 +13,8 @@ from contratacion.fetcher import Fetcher, Sender
 
 from spec.fixtures import (MAIN_PAGE, FIRST_PAGE_URL, FIRST_PAGE, DETAIL_URLS,
                            FIRST_PAGE_ACTION, FIRST_PAGE_FORM_DATA,
-                           DETAIL_PAGE, DATA_PAGE_URL, DATA_PAGE, DOCUMENT_URL)
+                           DETAIL_PAGE, DATA_PAGE_URL, DATA_PAGE, DOCUMENT_URL,
+                           CODICE_21_DOCUMENT)
 
 
 with describe(Fetcher) as _:
@@ -91,8 +94,129 @@ with describe(Fetcher) as _:
 
             expect(url).to.be.equal(DOCUMENT_URL)
 
+    with context('fetch_data'):
+        def _requests_for_fetch_data(fetcher):
+            document_url = fetcher.uri(DOCUMENT_URL)
+            request = fetcher.request(document_url)
+            response = _Response(url=document_url + '/', text=CODICE_21_DOCUMENT)
+            return document_url, request, response
+
+        def it_should_do_nothing_if_the_document_has_been_downloaded_before():
+            fetcher = _get_fetcher()
+            document_url, request, response = _requests_for_fetch_data(fetcher)
+            fetcher.store.__contains__.return_value = True
+            fetcher.send = Mock()
+
+            fetcher.fetch_data(request)
+
+            expect(fetcher.send.called).to.be.false
+            expect(fetcher.store.__contains__.call_args[0]).to.have(request.url)
+
+        def it_should_download_new_data_documents():
+            fetcher = _get_fetcher()
+            document_url, request, response = _requests_for_fetch_data(fetcher)
+            fetcher.store.__contains__.return_value = False
+            fetcher.send = Mock(return_value=response)
+
+            fetcher.fetch_data(request)
+
+            expect(fetcher.send.call_args[0]).to.have(request)
+
+        def it_should_store_downloaded_data_documents_by_url():
+            fetcher = _get_fetcher()
+            document_url, request, response = _requests_for_fetch_data(fetcher)
+            fetcher.store.__contains__.return_value = False
+            fetcher.send = Mock(return_value=response)
+            fetcher.store.put = Mock()
+
+            fetcher.fetch_data(request)
+
+            expect(fetcher.store.put.call_args[0]).to.have(response.url, response.text)
+
+    with context('fetch_data_page'):
+        def it_should_fetch_the_data_page():
+            request, fetcher = None, _get_fetcher()
+            fetcher.fetch = Mock()
+            fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
+
+            fetcher.fetch_data_page(request)
+
+            expect(fetcher.fetch.call_args[0]).to.have(request)
+
+        def it_should_resolve_the_meta_redirection():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
+
+            fetcher.fetch_data_page(request)
+
+            expect(fetcher.get_html_meta_redirection_url.call_args[0]).to.have(document)
+
+        def it_should_return_a_prepared_request_for_document_url():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
+
+            request = fetcher.fetch_data_page(request)
+
+            expect(request.path_url).to.be.equal(DOCUMENT_URL)
+
+    with context('fetch_detail_page'):
+        def it_should_fetch_the_detail_request():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
+
+            fetcher.fetch_detail_page(request)
+
+            expect(fetcher.fetch.call_args[0]).to.have(request)
+
+        def it_should_get_the_data_page_link():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
+
+            fetcher.fetch_detail_page(request)
+
+            expect(fetcher.get_most_recent_xml_link_from_detail_page.call_args[0]).to.have(document)
+
+        def it_should_return_a_prepared_request_for_document_url():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=DATA_PAGE_URL)
+
+            next_request = fetcher.fetch_detail_page(request)
+
+            expect(next_request.url).to.be.equal(DATA_PAGE_URL)
+
+        def it_should_return_none_if_there_is_no_data_document_links():
+            request, fetcher, document = None, _get_fetcher(), 'document'
+            fetcher.fetch = Mock(return_value=document)
+            fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
+
+            next_request = fetcher.fetch_detail_page(request)
+
+            expect(next_request).to.be.none
+
+    with context('fetch_data_document'):
+        def it_should_fetch_a_data_document_from_a_detail_page_request():
+            detail_page_request, data_page_request, data_document_request = 1, 2, 3
+            fetcher = _get_fetcher()
+            fetcher.fetch_detail_page = Mock(return_value=data_page_request)
+            fetcher.fetch_data_page = Mock(return_value=data_document_request)
+            fetcher.fetch_data = Mock(return_value=None)
+
+            fetcher.fetch_data_document(detail_page_request)
+
+            fetcher.fetch_detail_page.assert_called_with(detail_page_request)
+            fetcher.fetch_data_page.assert_called_with(data_page_request)
+            fetcher.fetch_data.assert_called_with(data_document_request)
+
+    def _get_store():
+        return MagicMock()
+
     def _get_fetcher(**kwargs):
-        return Fetcher(store=None, **kwargs)
+        return Fetcher(store=_get_store(), **kwargs)
 
     def _get_document(source):
         return PyQuery(source)
@@ -106,3 +230,8 @@ with describe(Fetcher) as _:
             'detail_page': _get_document(DETAIL_PAGE),
             'data_page': _get_document(DATA_PAGE)
         }
+
+    class _Response(object):
+        def __init__(self, url, text):
+            self.url = url
+            self.text = text
