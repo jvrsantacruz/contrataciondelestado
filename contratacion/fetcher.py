@@ -167,7 +167,7 @@ class Fetcher(object):
 
         if page >= self.start_page:
             if details:
-                self.pool.map(self.fetch_data_document, details)
+                self.pool.map_async(self.fetch_data_document, details)
 
         logger.info("Page {}".format(page))
         return next
