@@ -133,11 +133,16 @@ class Fetcher(object):
     host = "https://contrataciondelestado.es"
     main_url = urljoin(host, "/wps/portal/plataforma")
 
-    def __init__(self, store, page=None):
+    def __init__(self, store, page=None, workers=None):
         self.store = store
-        self.pool = Pool(10)
         self.sender = Sender()
         self.start_page = page if page is not None else 1
+        workers = workers if workers is not None else 5
+        self.pool = self.get_pool_of_workers(workers)
+
+    def get_pool_of_workers(self, workers):
+        logger.info('Starting %d workers', workers)
+        return Pool(workers)
 
     def run(self):
         next = self.fetch_main_page()
@@ -297,7 +302,7 @@ class Fetcher(object):
         return self.sender.send(request)
 
 
-def fetch_documents(store_path, page):
+def fetch_documents(store_path, page, workers):
     store = Store(store_path)
-    fetcher = Fetcher(store=store, page=page)
+    fetcher = Fetcher(store=store, page=page, workers=workers)
     fetcher.run()

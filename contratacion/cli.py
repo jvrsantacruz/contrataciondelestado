@@ -2,7 +2,7 @@
 """Contratacion
 
 Usage:
-    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>]
+    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
 Commands:
@@ -12,7 +12,8 @@ Commands:
 Options:
     -h --help       See this help
     --version       Show version
-    --page N        Skip previous pages when downloading
+    --page N        Skip previous pages when downloading [default: 1]
+    --workers N     Max number of concurrent requests [default: 5]
     --store FILE    Database file for download store [default: store.sqlite]
     --db FILE       Database file for processed data [default: db.sqlite]
     -v --verbose    Increase output verbosity level (Use -vv for debug level)
@@ -34,7 +35,8 @@ def fetch_documents(args):
 
     store = args.get('--store')
     page = to_int(args.get('--page'))
-    fetcher.fetch_documents(store_path=store, page=page)
+    workers = to_int(args.get('--workers'))
+    fetcher.fetch_documents(store_path=store, page=page, workers=workers)
 
 
 def parse_documents(args):
