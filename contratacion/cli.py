@@ -22,11 +22,18 @@ from docopt import docopt
 from . import __version__
 
 
+def to_int(number):
+    try:
+        return int(number)
+    except (TypeError, ValueError):
+        pass
+
+
 def fetch_documents(args):
     from . import fetcher
 
-    page = args.get('--page')
     store = args.get('--store')
+    page = to_int(args.get('--page'))
     fetcher.fetch_documents(store_path=store, page=page)
 
 
