@@ -15,29 +15,73 @@ from .helpers import first, to_float, compose_iso_date
 logger = logging.getLogger('parser')
 
 
-class ParserImplementation(object):
+class Query(object):
+    """Builds and execute xpath in easy steps
+
+    Based on context managers that keeps state, a query can be composed by
+    steps, allowing to perform multiple queries with the same prefix.
+
+    >>> document = lxml.etree.fromstring(\"\"\"
+    <root>
+        <element>
+            <child>foo</child>
+            <sibling>bar</sibling>
+        </element>
+    </root>
+    \"\"\")
+    >>> namespaces = {}
+    >>> query = Query(document, namespaces)
+    >>> with query('/root') as q:
+            with query('/element'):
+                print(q['/child/text()'])
+                print(q['/sibling/text()'])
+    'foo'
+    'bar'
+    """
     def __init__(self, document, namespaces):
-        self._prefix = ''
+        """Create a query manager object
+
+        :param document: :class:`etree.ElementTree` object
+        :param namespaces: a `prefix: uri` dictionary for xml namespaces.
+        """
+        self.prefix = ''
         self.document = document
         self.namespaces = namespaces
 
     def xpath(self, query):
+        """Compile a xpath query"""
         return self.document.xpath(query, namespaces=self.namespaces)
 
     def element(self, query_text):
+        """Perform the xpath query and get the result"""
         return first(self.xpath(self.query(query_text)))
 
     def query(self, query_text):
-        return self._prefix + query_text
+        """Add the current context to the given query"""
+        return self.prefix + query_text
 
     @contextmanager
     def within(self, prefix):
-        old_prefix = self._prefix
+        """Append the given piece of query to the context"""
+        old_prefix = self.prefix
 
-        self._prefix += prefix
-        yield self._prefix
+        self.prefix += prefix
+        yield self
+        self.prefix = old_prefix
 
-        self._prefix = old_prefix
+    @contextmanager
+    def __call__(self, prefix):
+        with self.within(prefix) as query:
+            yield query
+
+    def __getitem__(self, query_text):
+        """Perform the xpath query and get the result"""
+        return self.element(query_text)
+
+
+class ParserImplementation(object):
+    def __init__(self, query):
+        self.query = query
 
 
 class Codice1Parser(ParserImplementation):
@@ -48,53 +92,50 @@ class Codice1Parser(ParserImplementation):
         return data
 
     def parse_codice(self):
-        with self.within('/can:ContractAwardNotice'):
+        with self.query('/can:ContractAwardNotice') as q:
             data = {
-                'uuid': self.element('/cbc:UUID/text()'),
-                'file': self.element('/cbc:ContractFileID/text()'),
+                'uuid': q['/cbc:UUID/text()'],
+                'file': q['/cbc:ContractFileID/text()'],
                 'issued_at': compose_iso_date(
-                    date=self.element('/cbc:IssueDate/text()'),
-                    time=self.element('/cbc:IssueTime/text()')
+                    date=q['/cbc:IssueDate/text()'],
+                    time=q['/cbc:IssueTime/text()']
                 ),
             }
-            with self.within('/cac:TenderResult'):
+            with q('/cac:TenderResult'):
                 data.update({
-                    'result_code': self.element('/cbc:ResultCode/text()'),
+                    'result_code': q['/cbc:ResultCode/text()'],
                     'awarded_at': compose_iso_date(
-                        date=self.element('/cbc:AwardDate/text()'),
-                        time=self.element('/cbc:AwardTime/text()')
+                        date=q['/cbc:AwardDate/text()'],
+                        time=q['/cbc:AwardTime/text()']
                     ),
+                    'amount': to_float(q['/cbc:AwardPriceAmount/text()']),
+                    'payable_amount': to_float(q['/cbc:TotalAwardPriceAmount/text()']),
                 })
-            with self.within('/cac:TenderResult'):
-                data.update({
-                    'amount': to_float(self.element('/cbc:AwardPriceAmount/text()')),
-                    'payable_amount': to_float(self.element('/cbc:TotalAwardPriceAmount/text()')),
-                })
-                with self.within('/cac:ProcuringProject'):
+                with q('/cac:ProcuringProject'):
                     data.update({
-                        'title': self.element('/cbc:ContractName/text()'),
-                        'type': self.element('/cbc:TypeCode/@name'),
-                        'subtype': self.element('/cbc:SubTypeCode/@name'),
-                        'budget_amount': to_float(self.element('/cbc:NetBudgetAmount/text()')),
-                        'budget_payable_amount': to_float(self.element('/cbc:TotalBudgetAmount/text()')),
+                        'title': q['/cbc:ContractName/text()'],
+                        'type': q['/cbc:TypeCode/@name'],
+                        'subtype': q['/cbc:SubTypeCode/@name'],
+                        'budget_amount': to_float(q['/cbc:NetBudgetAmount/text()']),
+                        'budget_payable_amount': to_float(q['/cbc:TotalBudgetAmount/text()']),
                     })
         return data
 
     def parse_contracted(self):
-        with self.within('/can:ContractAwardNotice/cac:TenderResult/cac:WinnerParty'):
+        with self.query('/can:ContractAwardNotice/cac:TenderResult/cac:WinnerParty') as q:
             return {
-                'name': self.element('/cac:PartyName/cbc:Name/text()'),
-                'nif': self.element('/cac:PartyIdentification/cbc:ID/text()')
+                'name': q['/cac:PartyName/cbc:Name/text()'],
+                'nif': q['/cac:PartyIdentification/cbc:ID/text()']
             }
 
     def parse_contractor(self):
-        with self.within('/can:ContractAwardNotice/cac:ContractingAuthorityParty'):
-            data = {'uri': self.element('/cbc:BuyerProfileURIID/text()')}
+        with self.query('/can:ContractAwardNotice/cac:ContractingAuthorityParty') as q:
+            data = {'uri': q['/cbc:BuyerProfileURIID/text()']}
 
-            with self.within('/cac:Party'):
+            with q('/cac:Party'):
                 data.update({
-                    'name': self.element('/cac:PartyName/cbc:Name/text()'),
-                    'nif': self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
+                    'name': q['/cac:PartyName/cbc:Name/text()'],
+                    'nif': q['/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'],
                 })
         return data
 
@@ -107,60 +148,60 @@ class Codice2Parser(ParserImplementation):
         return data
 
     def parse_codice(self):
-        with self.within('/can:ContractAwardNotice'):
+        with self.query('/can:ContractAwardNotice') as q:
             data = {
-                'uuid': self.element('/cbc:UUID/text()'),
-                'file': self.element('/cbc:ContractFolderID/text()'),
+                'uuid': q['/cbc:UUID/text()'],
+                'file': q['/cbc:ContractFolderID/text()'],
                 'issued_at': compose_iso_date(
-                    date=self.element('/cbc:IssueDate/text()'),
-                    time=self.element('/cbc:IssueTime/text()')
+                    date=q['/cbc:IssueDate/text()'],
+                    time=q['/cbc:IssueTime/text()']
                 ),
             }
-            with self.within('/cac:TenderResult'):
+            with q('/cac:TenderResult'):
                 data.update({
-                    'result_code': self.element('/cbc:ResultCode/text()'),
+                    'result_code': q['/cbc:ResultCode/text()'],
                     'awarded_at': compose_iso_date(
-                        date=self.element('/cbc:AwardDate/text()'),
-                        time=self.element('/cbc:AwardTime/text()')
+                        date=q['/cbc:AwardDate/text()'],
+                        time=q['/cbc:AwardTime/text()']
                     ),
                 })
 
-            with self.within('/cac:ProcurementProject'):
+            with q('/cac:ProcurementProject'):
                 data.update({
-                    'title': self.element('/cbc:Name/text()'),
-                    'type': self.element('/cbc:TypeCode/@name'),
-                    'subtype': self.element('/cbc:SubTypeCode/@name'),
-                    'budget_amount': to_float(self.element('/cbc:BudgetAmount/cbc:TaxExclusiveAmount/text()')),
-                    'budget_payable_amount': to_float(self.element('/cbc:BudgetAmount/cbc:PayableAmount/text()')),
+                    'title': q['/cbc:Name/text()'],
+                    'type': q['/cbc:TypeCode/@name'],
+                    'subtype': q['/cbc:SubTypeCode/@name'],
+                    'budget_amount': to_float(q['/cbc:BudgetAmount/cbc:TaxExclusiveAmount/text()']),
+                    'budget_payable_amount': to_float(q['/cbc:BudgetAmount/cbc:PayableAmount/text()']),
                 })
 
-            with self.within('/cac:TenderResult'):
-                with self.within('/cac:AwardedTenderedProject'):
-                    with self.within('/cac:LegalMonetaryTotal'):
+            with q('/cac:TenderResult'):
+                with q('/cac:AwardedTenderedProject'):
+                    with q('/cac:LegalMonetaryTotal'):
                         data.update({
-                            'amount': to_float(self.element('/cbc:TaxExclusiveAmount/text()')),
-                            'payable_amount': to_float(self.element('/cbc:PayableAmount/text()')),
+                            'amount': to_float(q['/cbc:TaxExclusiveAmount/text()']),
+                            'payable_amount': to_float(q['/cbc:PayableAmount/text()']),
                         })
         return data
 
     def parse_contracted(self):
-        with self.within('/can:ContractAwardNotice'):
-            with self.within('/cac:TenderResult'):
-                with self.within('/cac:WinningParty'):
+        with self.query('/can:ContractAwardNotice') as q:
+            with q('/cac:TenderResult'):
+                with q('/cac:WinningParty'):
                     return {
-                        'nif': (self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="NIE" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()')
-                                or self.element('/cac:PartyIdentification/cbc:ID/text()')),
-                        'name': self.element('/cac:PartyName/cbc:Name/text()'),
+                        'nif': (q['/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="NIE" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()']
+                                or q['/cac:PartyIdentification/cbc:ID/text()']),
+                        'name': q['/cac:PartyName/cbc:Name/text()'],
                     }
 
     def parse_contractor(self):
-        with self.within('/can:ContractAwardNotice'):
-            with self.within('/cac:ContractingParty'):
-                with self.within('/cac:Party'):
+        with self.query('/can:ContractAwardNotice') as q:
+            with q('/cac:ContractingParty'):
+                with q('/cac:Party'):
                     return {
-                        'nif': self.element('/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'),
-                        'name': self.element('/cac:PartyName/cbc:Name/text()'),
-                        'uri': self.element('/cbc:WebsiteURI/text()'),
+                        'nif': q['/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF"]/text()'],
+                        'name': q['/cac:PartyName/cbc:Name/text()'],
+                        'uri': q['/cbc:WebsiteURI/text()'],
                     }
 
 
@@ -171,7 +212,12 @@ class Parser(object):
         self.version = self.get_version(self.document)
         self.type = self.get_document_type(self.document)
         self.namespaces = self.prepare_namespaces(self.document)
-        self.impl = self.prepare_impl(self.document, self.namespaces)
+
+        self.impl = self.prepare_impl()
+
+    @property
+    def query(self):
+        return Query(self.document, self.namespaces)
 
     def prepare_document(self, content):
         return etree.fromstring(content)
@@ -192,13 +238,13 @@ class Parser(object):
 
         return namespaces
 
-    def prepare_impl(self, document, namespaces):
+    def prepare_impl(self):
         Parser = {
             None: Codice1Parser,
             'CODICE 2.0': Codice2Parser,
             'CODICE 2.01': Codice2Parser
         }.get(self.version)
-        return Parser(document, namespaces)
+        return Parser(self.query)
 
     def get_version(self, document):
         return first(document.xpath('*[local-name() = "CustomizationID"]/text()'))

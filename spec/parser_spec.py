@@ -94,8 +94,7 @@ with describe(Codice1Parser) as _:
     @before.all
     def fixture_():
         _.main_parser = _make_parser(NO_VERSION_DOCUMENT)
-        _.parser = Codice1Parser(
-            _.main_parser.document, _.main_parser.namespaces)
+        _.parser = Codice1Parser(_.main_parser.query)
         _.result = _.parser.parse()
         _.title = ('PLANIFICACI\xd3N E INSERCI\xd3N EN EL MEDIO TELEVISI\xd3N '
                    'DE LAS CAMPA\xd1AS PUBLICITARIAS DEL FROM DURANTE EL A\xd1O'
@@ -146,8 +145,7 @@ with describe('Codice2Parser with CODICE 2 document') as _:
     @before.all
     def firxture__():
         _.main_parser = _make_parser(CODICE_2_DOCUMENT)
-        _.parser = Codice2Parser(
-            _.main_parser.document, _.main_parser.namespaces)
+        _.parser = Codice2Parser(_.main_parser.query)
         _.result = _.parser.parse()
         _.title = ('Servicio de Conservaci\xf3n y Mantenimiento de Las '
                    'Instalaciones T\xe9rmicas de la Base A\xe9rea de '
@@ -199,8 +197,7 @@ with describe('Codice2Parser with CODICE 2.1 document') as _:
     @before.all
     def firxture___():
         _.main_parser = _make_parser(CODICE_21_DOCUMENT)
-        _.parser = Codice2Parser(
-            _.main_parser.document, _.main_parser.namespaces)
+        _.parser = Codice2Parser(_.main_parser.query)
         _.result = _.parser.parse()
         _.title = ('Servicio de Conservaci\xf3n y Mantenimiento de Las '
                    'Instalaciones T\xe9rmicas de la Base A\xe9rea de '
