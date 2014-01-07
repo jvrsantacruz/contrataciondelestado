@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import sys
-import zlib
 import logging
 from contextlib import contextmanager
 
@@ -172,39 +170,6 @@ class Codice2Parser(ParserImplementation):
                     }
 
 
-class Validator(object):
-    accepted_result_codes = {
-        'Adjudicado': '8',
-        'Formalizado': '9',
-        'Adjudicado Definitivamente': '2',
-    }
-
-    def assert_any_is_not_none(self, data, *names):
-        assert any(data[name] is not None for name in names),\
-            "One of {} is empty".format(names)
-
-    def validate(self, data):
-        assert data['result_code'] in self.accepted_result_codes.values(), 'Not Successful'
-
-        self.assert_any_is_not_none(data, 'amount', 'budget_amount')
-        self.assert_any_is_not_none(data, 'payable_amount', 'budget_payable_amount')
-
-        assert data['uuid'], "UUID is empty"
-        assert data['file'], "File is empty"
-        assert data['issued_at'], "issued_at is empty"
-        assert data['awarded_at'], "awarded_at is empty"
-
-        assert data['contractor'], "Contractor is empty"
-        assert data['contractor']['nif'], "Contractor's nif is empty"
-        assert data['contractor']['name'], "Contractor's name is empty"
-
-        assert data['contracted'], "Contracted is empty"
-        assert data['contracted']['nif'], "Contracted's nif is empty"
-        assert data['contracted']['name'], "Contracted's name is empty"
-
-        return data
-
-
 class Parser(object):
     def __init__(self, content):
         content = self.prepare_content(content)
@@ -309,6 +274,3 @@ def parse_documents(store_path, database_path):
 
     _log_parsing_progress(inserted, ignored, rejected, progress, total)
     logger.info('finished')
-
-if __name__ == "__main__":
-    main()
