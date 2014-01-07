@@ -9,6 +9,7 @@ from lxml import etree
 from .store import Store
 from .validators import validate
 from .models import get_session, Licitation
+from .helpers import first, to_float, compose_iso_date
 
 
 logger = logging.getLogger('parser')
@@ -38,13 +39,6 @@ class ParserImplementation(object):
 
         self._prefix = old_prefix
 
-    def parse_iso_datetime(self, date, time):
-        if date:
-            zone = date[10:]
-            nozone_date = date[:10]
-            nozone_time = (time and time[:8]) or "00:00:00"
-            return "{date}T{time}{zone}".format(date=nozone_date, time=nozone_time, zone=zone)
-
 
 class Codice1Parser(ParserImplementation):
     def parse(self):
@@ -58,7 +52,7 @@ class Codice1Parser(ParserImplementation):
             data = {
                 'uuid': self.element('/cbc:UUID/text()'),
                 'file': self.element('/cbc:ContractFileID/text()'),
-                'issued_at': self.parse_iso_datetime(
+                'issued_at': compose_iso_date(
                     date=self.element('/cbc:IssueDate/text()'),
                     time=self.element('/cbc:IssueTime/text()')
                 ),
@@ -66,7 +60,7 @@ class Codice1Parser(ParserImplementation):
             with self.within('/cac:TenderResult'):
                 data.update({
                     'result_code': self.element('/cbc:ResultCode/text()'),
-                    'awarded_at': self.parse_iso_datetime(
+                    'awarded_at': compose_iso_date(
                         date=self.element('/cbc:AwardDate/text()'),
                         time=self.element('/cbc:AwardTime/text()')
                     ),
@@ -117,7 +111,7 @@ class Codice2Parser(ParserImplementation):
             data = {
                 'uuid': self.element('/cbc:UUID/text()'),
                 'file': self.element('/cbc:ContractFolderID/text()'),
-                'issued_at': self.parse_iso_datetime(
+                'issued_at': compose_iso_date(
                     date=self.element('/cbc:IssueDate/text()'),
                     time=self.element('/cbc:IssueTime/text()')
                 ),
@@ -125,7 +119,7 @@ class Codice2Parser(ParserImplementation):
             with self.within('/cac:TenderResult'):
                 data.update({
                     'result_code': self.element('/cbc:ResultCode/text()'),
-                    'awarded_at': self.parse_iso_datetime(
+                    'awarded_at': compose_iso_date(
                         date=self.element('/cbc:AwardDate/text()'),
                         time=self.element('/cbc:AwardTime/text()')
                     ),
@@ -214,18 +208,6 @@ class Parser(object):
 
     def parse(self):
         return self.impl.parse()
-
-
-def first(elements):
-    for element in elements:
-        return element
-
-
-def to_float(number):
-    try:
-        return float(number)
-    except (TypeError, ValueError):
-        return None
 
 
 def get_store(database):

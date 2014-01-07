@@ -23,15 +23,9 @@ from docopt import docopt
 from . import __version__
 
 
-def to_int(number):
-    try:
-        return int(number)
-    except (TypeError, ValueError):
-        pass
-
-
 def fetch_documents(args):
     from . import fetcher
+    from .utils import to_int
 
     store = args.get('--store')
     page = to_int(args.get('--page'))
