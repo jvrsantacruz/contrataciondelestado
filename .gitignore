@@ -1,4 +1,4 @@
-*.sw[op]
+*.sw[a-z]
 *.pyc
 *.ps
 *.zip
