@@ -133,8 +133,9 @@ class Fetcher(object):
     host = "https://contrataciondelestado.es"
     main_url = urljoin(host, "/wps/portal/plataforma")
 
-    def __init__(self, store, page=None, workers=None):
+    def __init__(self, store, page=None, workers=None, async=None):
         self.store = store
+        self.async = async
         self.sender = Sender()
         self.start_page = page if page is not None else 1
         workers = workers if workers is not None else 5
@@ -174,12 +175,16 @@ class Fetcher(object):
         logger.info("Page {}".format(page))
 
         if details and self.should_get_page_details(page):
-            self.pool.map_async(self.fetch_data_document, details)
+            self.fetch_all_data_documents_from_details(details)
 
         return next
 
     def should_get_page_details(self, page):
         return page >= self.start_page
+
+    def fetch_all_data_documents_from_details(self, details):
+        pool_map = self.pool.map_async if self.async else self.pool.map
+        pool_map(self.fetch_data_document, details)
 
     def fetch_list_page(self, request):
         """Load and parse the list of links in a result page
@@ -302,7 +307,7 @@ class Fetcher(object):
         return self.sender.send(request)
 
 
-def fetch_documents(store_path, page, workers):
+def fetch_documents(store_path, page, workers, async):
     store = Store(store_path)
-    fetcher = Fetcher(store=store, page=page, workers=workers)
+    fetcher = Fetcher(store=store, page=page, workers=workers, async=async)
     fetcher.run()

@@ -2,7 +2,7 @@
 """Contratacion
 
 Usage:
-    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>]
+    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
 Commands:
@@ -16,6 +16,7 @@ Options:
     --workers N     Max number of concurrent requests [default: 5]
     --store FILE    Database file for download store [default: store.sqlite]
     --db FILE       Database file for processed data [default: db.sqlite]
+    --async         Do not way for a page to complete until getting the next one
     -v --verbose    Increase output verbosity level (Use -vv for debug level)
 """
 from docopt import docopt
@@ -25,12 +26,14 @@ from . import __version__
 
 def fetch_documents(args):
     from . import fetcher
-    from .utils import to_int
+    from .helpers import to_int
 
     store = args.get('--store')
+    async = args.get('--async')
     page = to_int(args.get('--page'))
     workers = to_int(args.get('--workers'))
-    fetcher.fetch_documents(store_path=store, page=page, workers=workers)
+    fetcher.fetch_documents(
+        store_path=store, page=page, workers=workers, async=async)
 
 
 def parse_documents(args):
