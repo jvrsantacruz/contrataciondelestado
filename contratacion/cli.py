@@ -2,7 +2,7 @@
 """Contratacion
 
 Usage:
-    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async]
+    contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async] [--max-retries=<N>]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
 Commands:
@@ -10,14 +10,15 @@ Commands:
     parse       Parse and store downloaded documents
 
 Options:
-    -h --help       See this help
-    --version       Show version
-    --page N        Skip previous pages when downloading [default: 1]
-    --workers N     Max number of concurrent requests [default: 5]
-    --store FILE    Database file for download store [default: store.sqlite]
-    --db FILE       Database file for processed data [default: db.sqlite]
-    --async         Do not way for a page to complete until getting the next one
-    -v --verbose    Increase output verbosity level (Use -vv for debug level)
+    -h --help         See this help
+    --version         Show version
+    --page N          Skip previous pages when downloading [default: 1]
+    --workers N       Max number of concurrent requests [default: 5]
+    --store FILE      Database file for download store [default: store.sqlite]
+    --db FILE         Database file for processed data [default: db.sqlite]
+    --async           Do not way for a page to complete until getting the next one
+    --max-retries N   Number of times to retry a failed request before dumping it [default: 3]
+    -v --verbose      Increase output verbosity level (Use -vv for debug level)
 """
 from docopt import docopt
 
@@ -32,8 +33,9 @@ def fetch_documents(args):
     async = args.get('--async')
     page = to_int(args.get('--page'))
     workers = to_int(args.get('--workers'))
-    fetcher.fetch_documents(
-        store_path=store, page=page, workers=workers, async=async)
+    max_retries = to_int(args.get('--max-retries'))
+    fetcher.fetch_documents(store_path=store, page=page, workers=workers,
+                            async=async, max_retries=max_retries)
 
 
 def parse_documents(args):

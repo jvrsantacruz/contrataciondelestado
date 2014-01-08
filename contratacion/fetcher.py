@@ -357,7 +357,8 @@ class Fetcher(object):
         return self.sender.execute(function, request)
 
 
-def fetch_documents(store_path, page, workers, async):
+def fetch_documents(store_path, page, workers, async, max_retries):
     store = Store(store_path)
-    fetcher = Fetcher(store=store, page=page, workers=workers, async=async)
+    fetcher = Fetcher(store=store, page=page, workers=workers,
+                      async=async, max_retries=max_retries)
     fetcher.run()
