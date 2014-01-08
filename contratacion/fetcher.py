@@ -7,10 +7,12 @@ monkey.patch_all()
 
 import re
 import time
+import random
 import logging
 from itertools import chain
 from urlparse import urljoin
 
+import gevent
 import requests
 from pyquery import PyQuery
 from gevent.pool import Pool
@@ -305,6 +307,31 @@ class Fetcher(object):
 
     def send(self, request):
         return self.sender.send(request)
+
+    retries = 0
+
+    def retry(self, function, request, max_retries=3):
+        times = 0
+        result = function(request)
+
+        while result is None and times < max_retries:
+            times += 1
+            self.retries += 1
+            self.wait_time(times)
+
+            logger.warning('Retrying "%s"', request.url)
+            logger.warning('Total retries "%d"', self.retries)
+            result = function(request)
+
+            if times == max_retries:
+                logger.warning('Out of reintents for %s', request.url)
+
+        return result
+
+    def wait_time(self, step):
+        """Binary exponential backoff"""
+        seconds = ((2. ** step) - 1.) / 2.
+        gevent.sleep(seconds + random.random())
 
 
 def fetch_documents(store_path, page, workers, async):
