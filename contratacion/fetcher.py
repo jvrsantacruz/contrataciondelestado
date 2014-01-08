@@ -82,7 +82,9 @@ class Profiler(object):
 class Sender(object):
     """Manages request creation and sending"""
 
-    def __init__(self):
+    def __init__(self, max_retries):
+        self.retries = 0
+        self.max_retries = max_retries
         self.profiler = Profiler()
         self.session = requests.Session()
 
@@ -121,6 +123,43 @@ class Sender(object):
         self.profiler.request_sent()
         return response
 
+    def execute(self, function, request):
+        times = 0
+        result = function(request)
+
+        while self.should_keep_trying(result, times):
+            times += 1
+            self.wait_for_next_try(times)
+
+            logger.warning('Retrying "%s"', request.url)
+            result = function(request)
+
+        if times == self.max_retries:
+            logger.warning('Out of reintents (%d) for %s',
+                           self.max_retries, request.url)
+
+        return result
+
+    def should_keep_trying(self, result, times):
+        return result is None and times < self.max_retries
+
+    def wait_for_next_try(self, times):
+        self.retries += 1
+        logger.warning('Total retries "%d"', self.retries)
+        self.wait_time(times)
+
+    def wait_time(self, step):
+        """Binary exponential backoff
+
+        The server keeps session and renews it after a fixed amount of
+        requests. This invalidates the previous requests, which may have been
+        sent already, are thus refused by the server and must be retried.
+        When there is a bunch of requests being retried, a random waiting time
+        is used to avoid being sent at the same time again.
+        """
+        seconds = ((2. ** step) - 1.) / 2.
+        gevent.sleep(seconds + random.random())
+
 
 class Fetcher(object):
     """Fetching of xml documents from contrataciondelestado.es
@@ -136,10 +175,11 @@ class Fetcher(object):
     host = "https://contrataciondelestado.es"
     main_url = urljoin(host, "/wps/portal/plataforma")
 
-    def __init__(self, store, page=None, workers=None, async=None):
+    def __init__(self, store, page=None, workers=None,
+                 async=None, max_retries=None):
         self.store = store
         self.async = async
-        self.sender = Sender()
+        self.sender = Sender(3 if max_retries is None else max_retries)
         self.start_page = page if page is not None else 1
         workers = workers if workers is not None else 5
         self.pool = self.get_pool_of_workers(workers)
@@ -235,11 +275,11 @@ class Fetcher(object):
         :returns: Prepared request from the result list page.
         """
         with ignore(Exception):
-            detail = self.retry(self.fetch_detail_page, request)
+            detail = self.execute(self.fetch_detail_page, request)
             if detail is not None:
-                data = self.retry(self.fetch_data_page, detail)
+                data = self.execute(self.fetch_data_page, detail)
                 if data is not None:
-                    self.retry(self.fetch_data, data)
+                    self.execute(self.fetch_data, data)
                 else:
                     logger.error('Could not fetch data page: %s', detail.url)
             else:
@@ -313,30 +353,8 @@ class Fetcher(object):
     def send(self, request):
         return self.sender.send(request)
 
-    retries = 0
-
-    def retry(self, function, request, max_retries=3):
-        times = 0
-        result = function(request)
-
-        while result is None and times < max_retries:
-            times += 1
-            self.retries += 1
-            self.wait_time(times)
-
-            logger.warning('Retrying "%s"', request.url)
-            logger.warning('Total retries "%d"', self.retries)
-            result = function(request)
-
-            if times == max_retries:
-                logger.warning('Out of reintents for %s', request.url)
-
-        return result
-
-    def wait_time(self, step):
-        """Binary exponential backoff"""
-        seconds = ((2. ** step) - 1.) / 2.
-        gevent.sleep(seconds + random.random())
+    def execute(self, function, request):
+        return self.sender.execute(function, request)
 
 
 def fetch_documents(store_path, page, workers, async):

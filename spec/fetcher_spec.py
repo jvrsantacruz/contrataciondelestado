@@ -200,8 +200,9 @@ with describe(Fetcher) as _:
 
     with context('fetch_data_document'):
         def it_should_fetch_a_data_document_from_a_detail_page_request():
-            detail_page_request, data_page_request, data_document_request = 1, 2, 3
-            fetcher = _get_fetcher()
+            detail_page_request, data_page_request, data_document_request =\
+                _Request(1), _Request(2), _Request(3)
+            fetcher = _get_fetcher(max_retries=0)
             fetcher.fetch_detail_page = Mock(return_value=data_page_request)
             fetcher.fetch_data_page = Mock(return_value=data_document_request)
             fetcher.fetch_data = Mock(return_value=None)
@@ -235,3 +236,7 @@ with describe(Fetcher) as _:
         def __init__(self, url, text):
             self.url = url
             self.text = text
+
+    class _Request(object):
+        def __init__(self, url):
+            self.url = url
