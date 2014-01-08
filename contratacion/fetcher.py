@@ -18,6 +18,7 @@ from pyquery import PyQuery
 from gevent.pool import Pool
 
 from .store import Store
+from .helpers import ignore
 
 logger = logging.getLogger('fetcher')
 
@@ -173,13 +174,14 @@ class Fetcher(object):
         :param request: Prepared request for the nth page of results.
         :returns: Prepared request for page n + 1 if any
         """
-        details, page, next = self.fetch_list_page(request)
-        logger.info("Page {}".format(page))
+        with ignore(Exception):
+            details, page, next = self.fetch_list_page(request)
+            logger.info("Page {}".format(page))
 
-        if details and self.should_get_page_details(page):
-            self.fetch_all_data_documents_from_details(details)
+            if details and self.should_get_page_details(page):
+                self.fetch_all_data_documents_from_details(details)
 
-        return next
+            return next
 
     def should_get_page_details(self, page):
         return page >= self.start_page
@@ -232,15 +234,16 @@ class Fetcher(object):
         :param request: Prepared request for detail page.
         :returns: Prepared request from the result list page.
         """
-        detail = self.fetch_detail_page(request)
-        if detail is not None:
-            data = self.fetch_data_page(detail)
-            if data is not None:
-                self.fetch_data(data)
+        with ignore(Exception):
+            detail = self.retry(self.fetch_detail_page, request)
+            if detail is not None:
+                data = self.retry(self.fetch_data_page, detail)
+                if data is not None:
+                    self.retry(self.fetch_data, data)
+                else:
+                    logger.error('Could not fetch data page: %s', detail.url)
             else:
-                logger.error('Could not fetch data page: %s', detail.url)
-        else:
-            logger.error('Could not fetch detail page: %s', request.url)
+                logger.error('Could not fetch detail page: %s', request.url)
 
     def fetch_detail_page(self, request):
         """Fetch detail page and link for data document
@@ -287,14 +290,16 @@ class Fetcher(object):
         """Fetch a document file and store it if is new.
 
         :param request: Prepared request for the data document.
+        :returns: True if stored, False if already there.
         """
         if request.url in self.store:
             logger.warning('Already stored ' + request.url)
-            return
+            return False
 
         response = self.send(request)
         self.store.put(response.url, response.text)
         logger.info('Stored ' + response.url)
+        return True
 
     def request(self, url, data=None):
         return self.sender.request(url, data)
