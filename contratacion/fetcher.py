@@ -219,14 +219,13 @@ class Fetcher(object):
         :param request: Prepared request for the nth page of results.
         :returns: Prepared request for page n + 1 if any
         """
-        with ignore(Exception):
-            details, page, next = self.fetch_list_page(request)
-            logger.info("Page {}".format(page))
+        details, page, next = self.fetch_list_page(request)
+        logger.info("Page {}".format(page))
 
-            if details and self.should_get_page_details(page):
-                self.fetch_all_data_documents_from_details(details)
+        if details and self.should_get_page_details(page):
+            self.fetch_all_data_documents_from_details(details)
 
-            return next
+        return next
 
     def should_get_page_details(self, page):
         return page >= self.start_page
@@ -262,8 +261,9 @@ class Fetcher(object):
         return int(document('[id*="textNumPag"]').text())
 
     def get_request_to_next_list_page(self, document):
-        action, data = submit(document('input[id*="siguienteLink"]'))
-        return self.request(self.uri(action), data) if data else None
+        with ignore(Exception):
+            action, data = submit(document('input[id*="siguienteLink"]'))
+            return self.request(self.uri(action), data) if action else None
 
     def fetch_data_document(self, request):
         """Fetch an specific document

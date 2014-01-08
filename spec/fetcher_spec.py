@@ -2,19 +2,18 @@
 
 import urllib
 
-import responses
 from mock import Mock, MagicMock
 from expects import expect
 from mamba import describe, context, before
 
 from pyquery import PyQuery
 
-from contratacion.fetcher import Fetcher, Sender
+from contratacion.fetcher import Fetcher
 
 from spec.fixtures import (MAIN_PAGE, FIRST_PAGE_URL, FIRST_PAGE, DETAIL_URLS,
                            FIRST_PAGE_ACTION, FIRST_PAGE_FORM_DATA,
                            DETAIL_PAGE, DATA_PAGE_URL, DATA_PAGE, DOCUMENT_URL,
-                           CODICE_21_DOCUMENT)
+                           CODICE_21_DOCUMENT, LAST_PAGE, LAST_DETAIL_URLS)
 
 
 with describe(Fetcher) as _:
@@ -61,6 +60,13 @@ with describe(Fetcher) as _:
 
             expect(urls).to.be.equal(DETAIL_URLS)
 
+        def it_should_return_a_list_of_urls_for_last_page_document():
+            document = _.documents['last_page']
+
+            urls = _.fetcher.get_links_to_detail_page(document)
+
+            expect(urls).to.be.equal(LAST_DETAIL_URLS)
+
     with context('get_page_number'):
         def it_should_return_current_page_number():
             document = _.documents['first_page']
@@ -78,6 +84,13 @@ with describe(Fetcher) as _:
             expect(request).to.have.property('path_url', FIRST_PAGE_ACTION)
             expect(request).to.have.property('body', urllib.urlencode(FIRST_PAGE_FORM_DATA))
 
+        def it_should_return_none_at_the_last_page():
+            document = _.documents['last_page']
+
+            request = _.fetcher.get_request_to_next_list_page(document)
+
+            expect(request).to.be.none
+
     with context('get_most_recent_xml_link_from_detail_page'):
         def it_should_return_a_url_from_the_given_document_():
             document = _.documents['detail_page']
@@ -93,6 +106,29 @@ with describe(Fetcher) as _:
             url = _.fetcher.get_html_meta_redirection_url(document)
 
             expect(url).to.be.equal(DOCUMENT_URL)
+
+    with context('fetch_list_page'):
+        def it_should_return_current_page_next_request_and_all_detail_requests():
+            request = None
+            fetcher = _get_fetcher()
+            fetcher.fetch = Mock(return_value=_.documents['first_page'])
+
+            requests, page, next = fetcher.fetch_list_page(request)
+
+            expect(page).to.be.equal(1)
+            expect(next.path_url).to.be.equal(FIRST_PAGE_ACTION)
+            expect([r.path_url for r in requests]).to.be.equal(DETAIL_URLS)
+
+        def it_should_return_current_page_none_for_next_request_and_all_detail_requests():
+            request = None
+            fetcher = _get_fetcher()
+            fetcher.fetch = Mock(return_value=_.documents['last_page'])
+
+            requests, page, next = fetcher.fetch_list_page(request)
+
+            expect(next).to.be.none
+            expect(page).to.be.equal(2726)
+            expect([r.path_url for r in requests]).to.be.equal(LAST_DETAIL_URLS)
 
     with context('fetch_data'):
         def _requests_for_fetch_data(fetcher):
@@ -229,7 +265,8 @@ with describe(Fetcher) as _:
             'main_page': _get_document(MAIN_PAGE),
             'first_page': _get_document(FIRST_PAGE),
             'detail_page': _get_document(DETAIL_PAGE),
-            'data_page': _get_document(DATA_PAGE)
+            'data_page': _get_document(DATA_PAGE),
+            'last_page': _get_document(LAST_PAGE)
         }
 
     class _Response(object):
