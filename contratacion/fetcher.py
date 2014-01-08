@@ -14,6 +14,8 @@ from urlparse import urljoin
 
 import gevent
 import requests
+import lxml
+import lxml.etree
 from pyquery import PyQuery
 from gevent.pool import Pool
 
@@ -110,7 +112,10 @@ class Sender(object):
         :rtype: :class:`PyQuery` object.
         """
         response = self.send(request)
-        return PyQuery(response.text)
+        try:
+            return PyQuery(response.text)
+        except lxml.etree.XMLSyntaxError as error:
+            logger.error('Bad response %s:\n%s', response.url, response.text)
 
     def send(self, request):
         """Send the request and get the response
