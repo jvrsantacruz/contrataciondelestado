@@ -199,6 +199,13 @@ class Fetcher(object):
         while next:
             next = self.fetch_page(next)
 
+        self.finish()
+
+    def finish(self):
+        """Reaching the last page doesn't mean we're finished on async"""
+        if self.async:
+            self.pool.join()
+
     def fetch_main_page(self):
         """Load main url, obtain session cookie and url for 1 page
 
