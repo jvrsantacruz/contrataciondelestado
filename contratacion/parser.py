@@ -300,7 +300,7 @@ def parse_documents(store_path, database_path):
         else:
             ignored += 1
 
-        if total % 100:
+        if progress % 100 == 0:
             _log_parsing_progress(inserted, ignored, rejected, progress, total)
 
     _log_parsing_progress(inserted, ignored, rejected, progress, total)
