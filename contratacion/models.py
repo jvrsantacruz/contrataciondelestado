@@ -28,6 +28,16 @@ class Party(Base):
     def get_or_create(session, party):
         return Party.get_by_nif(session, party['nif']) or Party(**party)
 
+    @staticmethod
+    def contractors(session):
+        return session.query(Party).join(Licitation,
+            Licitation.contractor_id == Party.id)
+
+    @staticmethod
+    def contracteds(session):
+        return session.query(Party).join(Licitation,
+            Licitation.contracted_id == Party.id)
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -62,10 +72,12 @@ class Licitation(Base):
 
     contractor_id = Column(Integer(), ForeignKey('parties.id'))
     contractor = relationship("Party",
+                              backref='licitations',
                               primaryjoin="Licitation.contractor_id==Party.id")
 
     contracted_id = Column(Integer(), ForeignKey('parties.id'))
     contracted = relationship("Party",
+                              backref='licitations',
                               primaryjoin="Licitation.contracted_id==Party.id")
 
     @staticmethod
@@ -130,6 +142,3 @@ def get_session(database):
     Session = sessionmaker(bind=engine)
 
     return Session()
-
-
-
