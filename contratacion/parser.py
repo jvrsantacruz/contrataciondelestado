@@ -271,9 +271,12 @@ def is_valid_document(parser):
 
 def parse(store):
     for key, content in iteritems(store):
-        document = Parser(content)
-        if is_valid_document(document):
-            yield validate(document.parse())
+        try:
+            document = Parser(content)
+            if is_valid_document(document):
+                yield validate(document.parse())
+        except etree.XMLSyntaxError:
+            pass
 
 
 def _log_parsing_progress(*counters):
