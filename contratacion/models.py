@@ -31,12 +31,12 @@ class Party(Base):
 
     @staticmethod
     def contractors(session):
-        return session.query(Party).join(Licitation,
+        return session.query(Licitation).join(Party,
             Licitation.contractor_id == Party.id)
 
     @staticmethod
     def contracted(session):
-        return session.query(Party).join(Licitation,
+        return session.query(Licitation).join(Party,
             Licitation.contracted_id == Party.id)
 
     def to_dict(self):
