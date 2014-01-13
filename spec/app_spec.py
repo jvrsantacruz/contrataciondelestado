@@ -15,22 +15,18 @@ with describe('Application') as _:
     with context('licitation resource'):
         with context('when GET /licitation'):
             def it_should_return_ok_with_the_first_10_licitations():
-                licitations = {
-                    'licitations': [
-                        l.to_dict() for l in _licitations().limit(10)
-                    ]
-                }
+                licitations = [l.to_dict() for l in _licitations().limit(10)]
 
                 with _app().test_client() as client:
                     response = client.get('/licitations')
 
                 _expect_ok_response(response)
-                expect(licitations['licitations']).to.have.length(10)
+                expect(licitations).to.have.length(10)
                 expect(_json_data(response)).to.be.equal(licitations)
 
         with context('when GET /licitations/400'):
             def it_should_return_ok_with_the_licitation_n_400():
-                licitation = {'licitation': _licitation(400).to_dict()}
+                licitation = _licitation(400).to_dict()
 
                 with _app().test_client() as client:
                     response = client.get('/licitations/400')
@@ -48,11 +44,7 @@ with describe('Application') as _:
     with context('contractor resource'):
         with context('when GET /contractors'):
             def it_should_return_ok_with_the_first_10_contractors():
-                contractors = {
-                    'contractors': [
-                        c.to_dict() for c in _contractors().limit(10)
-                    ]
-                }
+                contractors = [c.to_dict() for c in _contractors().limit(10)]
 
                 with _app().test_client() as client:
                     response = client.get('/contractors')
@@ -62,7 +54,7 @@ with describe('Application') as _:
 
         with context('when GET /contractors/400'):
             def it_should_return_ok_with_the_contractor_n_400():
-                contractor = {'contractor': _contractor(400).to_dict()}
+                contractor = _contractor(400).to_dict()
 
                 with _app().test_client() as client:
                     response = client.get('/contractors/400')
@@ -80,11 +72,7 @@ with describe('Application') as _:
     with context('contracted resource'):
         with context('when GET /contracted'):
             def it_should_return_ok_with_the_first_10_contracted():
-                contracted = {
-                    'contracted': [
-                        c.to_dict() for c in _contracted().limit(10)
-                    ]
-                }
+                contracted = [c.to_dict() for c in _contracted().limit(10)]
 
                 with _app().test_client() as client:
                     response = client.get('/contracted')
@@ -94,7 +82,7 @@ with describe('Application') as _:
 
         with context('when GET /contracted/400'):
             def it_should_return_ok_with_the_contracted_n_400():
-                contracted = {'contracted': _contracted(400).to_dict()}
+                contracted = _contracted(400).to_dict()
 
                 with _app().test_client() as client:
                     response = client.get('/contracted/400')
@@ -112,11 +100,7 @@ with describe('Application') as _:
     with context('party resource'):
         with context('when GET /parties'):
             def it_should_return_ok_with_the_first_10_partys():
-                parties = {
-                    'parties': [
-                        p.to_dict() for p in _parties().limit(10)
-                    ]
-                }
+                parties = [p.to_dict() for p in _parties().limit(10)]
 
                 with _app().test_client() as client:
                     response = client.get('/parties')
@@ -126,7 +110,7 @@ with describe('Application') as _:
 
         with context('when GET /parties/100'):
             def it_should_return_ok_with_the_party_n_100():
-                party = {'party': _party(100).to_dict()}
+                party = _party(100).to_dict()
 
                 with _app().test_client() as client:
                     response = client.get('/parties/100')

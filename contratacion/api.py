@@ -16,18 +16,12 @@ class Resource(restful.Resource):
     def mapper(self):
         return mappers.Mapper.get_mapper(self.model, g.db)
 
+    def get(self, id=None):
+        return self.mapper.all() if id is None else self.mapper.get_or_404(id)
+
 
 class Licitations(Resource):
     model = models.Licitation
-
-    def get(self, id=None):
-        return self._get_all() if id is None else self._get_one(id)
-
-    def _get_all(self):
-        return dict(licitations=self.mapper.all())
-
-    def _get_one(self, id):
-        return dict(licitation=self.mapper.get_or_404(id))
 
 
 class Contractors(Resource):
@@ -37,15 +31,6 @@ class Contractors(Resource):
     def mapper(self):
         return mappers.ViewMapper(self.model.contractors(g.db))
 
-    def get(self, id=None):
-        return self._get_all() if id is None else self._get_one(id)
-
-    def _get_all(self):
-        return dict(contractors=self.mapper.all())
-
-    def _get_one(self, id):
-        return dict(contractor=self.mapper.get_or_404(id))
-
 
 class Contracteds(Resource):
     model = models.Party
@@ -54,27 +39,9 @@ class Contracteds(Resource):
     def mapper(self):
         return mappers.ViewMapper(self.model.contracted(g.db))
 
-    def get(self, id=None):
-        return self._get_all() if id is None else self._get_one(id)
-
-    def _get_all(self):
-        return dict(contracted=self.mapper.all())
-
-    def _get_one(self, id):
-        return dict(contracted=self.mapper.get_or_404(id))
-
 
 class Parties(Resource):
     model = models.Party
-
-    def get(self, id=None):
-        return self._get_all() if id is None else self._get_one(id)
-
-    def _get_all(self):
-        return dict(parties=self.mapper.all())
-
-    def _get_one(self, id):
-        return dict(party=self.mapper.get_or_404(id))
 
 
 api.add_resource(Licitations, '/licitations', '/licitations/<int:id>')
