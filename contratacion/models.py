@@ -22,6 +22,10 @@ class Party(Base):
     uri = Column(Unicode())
 
     @staticmethod
+    def get_by_id(session, id):
+        return session.query(Party).get(id)
+
+    @staticmethod
     def get_by_nif(session, nif):
         return session.query(Party).filter_by(nif=nif).first()
 
@@ -31,12 +35,12 @@ class Party(Base):
 
     @staticmethod
     def contractors(session):
-        return session.query(Licitation).join(Party,
+        return session.query(Party).join(Licitation,
             Licitation.contractor_id == Party.id)
 
     @staticmethod
     def contracted(session):
-        return session.query(Licitation).join(Party,
+        return session.query(Party).join(Licitation,
             Licitation.contracted_id == Party.id)
 
     def to_dict(self):
