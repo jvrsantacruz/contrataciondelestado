@@ -35,7 +35,7 @@ class Party(Base):
             Licitation.contractor_id == Party.id)
 
     @staticmethod
-    def contracteds(session):
+    def contracted(session):
         return session.query(Party).join(Licitation,
             Licitation.contracted_id == Party.id)
 
