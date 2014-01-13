@@ -1,10 +1,11 @@
 #-*- coding: utf-8 -*-
 
 import logging
+from functools import partial
 
 from dateutil.parser import parse as parse_date
-from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 from sqlalchemy import Column, Integer, Unicode, DateTime, Float, ForeignKey, create_engine
 
 
@@ -142,3 +143,7 @@ def get_session(database):
     Session = sessionmaker(bind=engine)
 
     return Session()
+
+
+def get_scoped_session(database):
+    return scoped_session(partial(get_session, database))
