@@ -22,6 +22,10 @@ class Party(Base):
     uri = Column(Unicode())
 
     @staticmethod
+    def get_by_id(session, id):
+        return session.query(Party).get(id)
+
+    @staticmethod
     def get_by_nif(session, nif):
         return session.query(Party).filter_by(nif=nif).first()
 
