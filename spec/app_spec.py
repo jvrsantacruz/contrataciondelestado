@@ -14,10 +14,10 @@ with describe('Application') as _:
 
     with context('licitation resource'):
         with context('when GET /licitation'):
-            def it_should_return_ok_with_the_first_20_licitations():
+            def it_should_return_ok_with_the_first_10_licitations():
                 licitations = {
                     'licitations': [
-                        l.to_dict() for l in _licitations().limit(20)
+                        l.to_dict() for l in _licitations().limit(10)
                     ]
                 }
 
@@ -25,7 +25,7 @@ with describe('Application') as _:
                     response = client.get('/licitations')
 
                 _expect_ok_response(response)
-                expect(licitations['licitations']).to.have.length(20)
+                expect(licitations['licitations']).to.have.length(10)
                 expect(_json_data(response)).to.be.equal(licitations)
 
         with context('when GET /licitations/400'):
@@ -47,10 +47,10 @@ with describe('Application') as _:
 
     with context('contractor resource'):
         with context('when GET /contractors'):
-            def it_should_return_ok_with_the_first_20_contractors():
+            def it_should_return_ok_with_the_first_10_contractors():
                 contractors = {
                     'contractors': [
-                        c.to_dict() for c in _contractors().limit(20)
+                        c.to_dict() for c in _contractors().limit(10)
                     ]
                 }
 
@@ -79,10 +79,10 @@ with describe('Application') as _:
 
     with context('contracted resource'):
         with context('when GET /contracted'):
-            def it_should_return_ok_with_the_first_20_contracted():
+            def it_should_return_ok_with_the_first_10_contracted():
                 contracted = {
                     'contracted': [
-                        c.to_dict() for c in _contracted().limit(20)
+                        c.to_dict() for c in _contracted().limit(10)
                     ]
                 }
 
@@ -111,10 +111,10 @@ with describe('Application') as _:
 
     with context('party resource'):
         with context('when GET /parties'):
-            def it_should_return_ok_with_the_first_20_partys():
+            def it_should_return_ok_with_the_first_10_partys():
                 parties = {
                     'parties': [
-                        p.to_dict() for p in _parties().limit(20)
+                        p.to_dict() for p in _parties().limit(10)
                     ]
                 }
 

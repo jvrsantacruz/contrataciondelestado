@@ -16,7 +16,7 @@ class Mapper(object):
         return  cls(session.query(model))
 
     def all(self):
-        return map(self.serialize, self.query[:20])
+        return map(self.serialize, self.query[:10])
 
     def get(self, id):
         return self.serialize(self.query.get(id))
