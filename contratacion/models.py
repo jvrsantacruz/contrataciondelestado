@@ -77,12 +77,12 @@ class Licitation(Base):
 
     contractor_id = Column(Integer(), ForeignKey('parties.id'))
     contractor = relationship("Party",
-                              backref='licitations',
+                              backref='offered_licitations',
                               primaryjoin="Licitation.contractor_id==Party.id")
 
     contracted_id = Column(Integer(), ForeignKey('parties.id'))
     contracted = relationship("Party",
-                              backref='licitations',
+                              backref='taken_licitations',
                               primaryjoin="Licitation.contracted_id==Party.id")
 
     @staticmethod
