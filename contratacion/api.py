@@ -4,70 +4,89 @@ from flask import Blueprint, g
 from flask.ext import restful
 
 import models
+import mappers
 
 
 api_blueprint = Blueprint('api', 'contratacion')
 api = restful.Api(api_blueprint)
 
 
-class Licitations(restful.Resource):
+class Resource(restful.Resource):
+    @property
+    def mapper(self):
+        return mappers.Mapper.get_mapper(self.model, g.db)
+
+
+class Licitations(Resource):
+    model = models.Licitation
+
     def get(self):
-        query = g.db.query(models.Licitation)[:20]
-        licitations = [l.to_dict() for l in query]
-        return dict(licitations=licitations)
+        return dict(licitations=self.mapper.all())
 
 
-class Licitation(restful.Resource):
+class Licitation(Resource):
+    model = models.Licitation
+
     def get(self, id):
-        licitation = g.db.query(models.Licitation).get(id)
-        if licitation is None:
-            restful.abort(404)
-        return dict(licitation=licitation.to_dict())
+        return dict(licitation=self.mapper.get_or_404(id))
 
 
-class Contractors(restful.Resource):
+class Contractors(Resource):
+    model = models.Party
+
+    @property
+    def mapper(self):
+        return mappers.ViewMapper(self.model.contractors(g.db))
+
     def get(self):
-        query = models.Party.contractors(g.db)[:20]
-        contractors = [l.to_dict() for l in query]
-        return dict(contractors=contractors)
+        return dict(contractors=self.mapper.all())
 
 
-class Contractor(restful.Resource):
+class Contractor(Resource):
+    model = models.Party
+
+    @property
+    def mapper(self):
+        return mappers.ViewMapper(self.model.contractors(g.db))
+
     def get(self, id):
-        contractor = models.Party.contractors(g.db).filter_by(id=id).first()
-        if contractor is None:
-            restful.abort(404)
-        return dict(contractor=contractor.to_dict())
+        return dict(contractor=self.mapper.get_or_404(id))
 
 
-class Contracteds(restful.Resource):
+class Contracteds(Resource):
+    model = models.Party
+
+    @property
+    def mapper(self):
+        return mappers.ViewMapper(self.model.contracted(g.db))
+
     def get(self):
-        query = models.Party.contracted(g.db)[:20]
-        contracted = [c.to_dict() for c in query]
-        return dict(contracted=contracted)
+        return dict(contracted=self.mapper.all())
 
 
-class Contracted(restful.Resource):
+class Contracted(Resource):
+    model = models.Party
+
+    @property
+    def mapper(self):
+        return mappers.ViewMapper(self.model.contracted(g.db))
+
     def get(self, id):
-        contracted = models.Party.contracted(g.db).filter_by(id=id).first()
-        if contracted is None:
-            restful.abort(404)
-        return dict(contracted=contracted.to_dict())
+        return dict(contracted=self.mapper.get_or_404(id))
 
 
-class Parties(restful.Resource):
+class Parties(Resource):
+    model = models.Party
+
     def get(self):
-        query = g.db.query(models.Party)[:20]
-        parties = [p.to_dict() for p in query]
-        return dict(parties=parties)
+        return dict(parties=self.mapper.all())
 
 
-class Party(restful.Resource):
+class Party(Resource):
+    model = models.Party
+
     def get(self, id):
-        party = models.Party.get_by_id(g.db, id)
-        if party is None:
-            restful.abort(404)
-        return dict(party=party.to_dict())
+        return dict(party=self.mapper.get_or_404(id))
 
 
 api.add_resource(Licitations, '/licitations')
