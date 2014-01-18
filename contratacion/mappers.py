@@ -32,3 +32,70 @@ class Mapper(object):
 class ViewMapper(Mapper):
     def get(self, id):
         return self.serialize(self.query.filter_by(id=id).first())
+
+
+def paginate(collection, page=None, per_page=None):
+    """Slice a page of the given collection
+
+    Pagination starts at `1`.
+
+    `metadata` consist in a dictionary that contains
+    the `last` page number, and may also have the values for
+    `next` and `prev` pages if apply.
+
+    :param collection: list-like object
+    :param page: number of the page (default: 10)
+    :param per_page: number of results per page (default: 10)
+    :returns: (elementos, metadata)
+    """
+    page = 1 if page is None else page
+    per_page = 10 if per_page is None else per_page
+
+    # query data
+    limit = max(per_page, 1)
+    offset = (max(page, 1) - 1) * limit
+
+    # slice the query
+    paginated = collection[offset:offset + limit]
+
+    # real data
+    total = length(collection)
+    total_query = length(paginated)     # number of items in response
+
+    metadata = pagination_metadata(offset, total_query, total)
+
+    return paginated, metadata
+
+
+def pagination_metadata(offset, limit, total):
+    """Return a metadata dict from the query counters
+
+    :param offset: offset to the last element in the page
+    :param limit: number of elements in the page
+    :param total: total elements in the collection
+    :returns: `dict` with optional `last`, `next` and `prev` values.
+    """
+    total_pages = nth_page(limit, total)
+    current_page = nth_page(limit, offset + limit)
+
+    meta = {'last': total_pages}
+
+    if current_page < total_pages:
+        meta['next'] = current_page + 1
+
+    if current_page > 1:
+        meta['prev'] = current_page - 1
+
+    return meta
+
+
+def nth_page(per_page, offset):
+    """Returns the page number of the nth item"""
+    return offset / per_page + int(offset % per_page > 0) if per_page else 1
+
+
+def length(query_or_collection):
+    try:
+        return len(query_or_collection)
+    except TypeError:
+        return query_or_collection.count()
