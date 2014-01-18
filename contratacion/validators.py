@@ -40,7 +40,7 @@ class Licitation(Model):
     issued_at = String(required=True)
     awarded_at = String(required=True)
     contractor = Embedded(Contractor, required=True)
-    contracted = Embedded(Contracted)
+    contracted = Embedded(Contracted, default=None)
 
 
 def validate(data):
