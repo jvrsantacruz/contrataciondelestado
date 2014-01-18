@@ -18,6 +18,10 @@ class Mapper(object):
     def all(self):
         return map(self.serialize, self.query[:10])
 
+    def all_paginated(self, page=None, per_page=None):
+        collection, meta = paginate(self.query, page=page, per_page=per_page)
+        return map(self.serialize, collection), meta
+
     def get(self, id):
         return self.serialize(self.query.get(id))
 

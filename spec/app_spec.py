@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import json
 
 from expects import expect
@@ -15,13 +14,13 @@ with describe('Application') as _:
     with context('licitation resource'):
         with context('when GET /licitation'):
             def it_should_return_ok_with_the_first_10_licitations():
-                licitations = [l.to_dict() for l in _licitations().limit(10)]
+                licitations = [l.to_dict() for l in _licitations().limit(_.per_page)]
 
                 with _app().test_client() as client:
                     response = client.get('/licitations')
 
                 _expect_ok_response(response)
-                expect(licitations).to.have.length(10)
+                expect(licitations).to.have.length(_.per_page)
                 expect(_json_data(response)).to.be.equal(licitations)
 
         with context('when GET /licitations/400'):
@@ -34,17 +33,28 @@ with describe('Application') as _:
                 _expect_ok_response(response)
                 expect(_json_data(response)).to.be.equal(licitation)
 
-        with context('when GET/licitations/999999'):
+        with context('when GET /licitations/999999'):
             def it_should_return_not_found_with_an_error_message():
                 with _app().test_client() as client:
                     response = client.get('/licitations/999999')
 
                 _expect_not_found_resposne(response)
 
+        with context('when GET /licitations?page=2'):
+            def it_should_return_per_page_items_of_page_2():
+                licitations = [l.to_dict() for l in
+                    _licitations().offset(_.per_page).limit(_.per_page)]
+
+                with _app().test_client() as client:
+                    response = client.get('/licitations?page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(licitations)
+
     with context('contractor resource'):
         with context('when GET /contractors'):
             def it_should_return_ok_with_the_first_10_contractors():
-                contractors = [c.to_dict() for c in _contractors().limit(10)]
+                contractors = [c.to_dict() for c in _contractors().limit(_.per_page)]
 
                 with _app().test_client() as client:
                     response = client.get('/contractors')
@@ -72,7 +82,7 @@ with describe('Application') as _:
     with context('contracted resource'):
         with context('when GET /contracted'):
             def it_should_return_ok_with_the_first_10_contracted():
-                contracted = [c.to_dict() for c in _contracted().limit(10)]
+                contracted = [c.to_dict() for c in _contracted().limit(_.per_page)]
 
                 with _app().test_client() as client:
                     response = client.get('/contracted')
@@ -99,8 +109,8 @@ with describe('Application') as _:
 
     with context('party resource'):
         with context('when GET /parties'):
-            def it_should_return_ok_with_the_first_10_partys():
-                parties = [p.to_dict() for p in _parties().limit(10)]
+            def it_should_return_ok_with_the_first_10_parties():
+                parties = [p.to_dict() for p in _parties().limit(_.per_page)]
 
                 with _app().test_client() as client:
                     response = client.get('/parties')
@@ -127,6 +137,7 @@ with describe('Application') as _:
 
     @before.all
     def setup():
+        _.per_page = 10
         _.db = get_session(_app().config['DATABASE'])
 
     def _app():

@@ -2,6 +2,7 @@
 
 from flask import Blueprint, g
 from flask.ext import restful
+from flask.ext.restful import reqparse
 
 import models
 import mappers
@@ -21,8 +22,15 @@ class Resource(restful.Resource):
 
 
 class ListResource(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('page', type=int, location='args', default=None)
+        self.parser.add_argument('per_page', type=int, location='args', default=None)
+
     def get(self):
-        return self.mapper.all()
+        arguments = self.parser.parse_args()
+        collection, metadata = self.mapper.all_paginated(**arguments)
+        return collection
 
 
 class Licitation(Resource):
