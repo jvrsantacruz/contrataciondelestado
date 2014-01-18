@@ -21,22 +21,20 @@ class Query(object):
     Based on context managers that keeps state, a query can be composed by
     steps, allowing to perform multiple queries with the same prefix.
 
-    >>> document = lxml.etree.fromstring(\"\"\"
-    <root>
-        <element>
-            <child>foo</child>
-            <sibling>bar</sibling>
-        </element>
-    </root>
-    \"\"\")
+    >>> document = etree.fromstring('''
+    ... <root>
+    ...    <element>
+    ...        <child>foo</child>
+    ...        <sibling>bar</sibling>
+    ...    </element>
+    ... </root>
+    ... ''')
     >>> namespaces = {}
     >>> query = Query(document, namespaces)
     >>> with query('/root') as q:
-            with query('/element'):
-                print(q['/child/text()'])
-                print(q['/sibling/text()'])
+    ...     with query('/element'):
+    ...         print(q['/child/text()'])
     'foo'
-    'bar'
     """
     def __init__(self, document, namespaces):
         """Create a query manager object
