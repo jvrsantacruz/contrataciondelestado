@@ -107,7 +107,8 @@ class Licitation(Base):
             data['issued_at'] = parse_date(data['issued_at'])
             data['awarded_at'] = parse_date(data['awarded_at'])
             data['contractor'] = Party.get_or_create(session, data['contractor'])
-            data['contracted'] = Party.get_or_create(session, data['contracted'])
+            if data['contracted'] is not None:
+                data['contracted'] = Party.get_or_create(session, data['contracted'])
 
             licitation = Licitation(**data)
             session.add(licitation)

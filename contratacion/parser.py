@@ -50,7 +50,7 @@ class Query(object):
         """Compile a xpath query"""
         return self.document.xpath(query, namespaces=self.namespaces)
 
-    def element(self, query_text):
+    def element(self, query_text=''):
         """Perform the xpath query and get the result"""
         return first(self.xpath(self.query(query_text)))
 
@@ -121,10 +121,11 @@ class Codice1Parser(ParserImplementation):
 
     def parse_contracted(self):
         with self.query('/can:ContractAwardNotice/cac:TenderResult/cac:WinnerParty') as q:
-            return {
-                'name': q['/cac:PartyName/cbc:Name/text()'],
-                'nif': q['/cac:PartyIdentification/cbc:ID/text()']
-            }
+            if q.element() is not None:
+                return {
+                    'name': q['/cac:PartyName/cbc:Name/text()'],
+                    'nif': q['/cac:PartyIdentification/cbc:ID/text()']
+                }
 
     def parse_contractor(self):
         with self.query('/can:ContractAwardNotice/cac:ContractingAuthorityParty') as q:
@@ -183,14 +184,14 @@ class Codice2Parser(ParserImplementation):
         return data
 
     def parse_contracted(self):
-        with self.query('/can:ContractAwardNotice') as q:
-            with q('/cac:TenderResult'):
-                with q('/cac:WinningParty'):
-                    return {
-                        'nif': (q['/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="NIE" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()']
-                                or q['/cac:PartyIdentification/cbc:ID/text()']),
-                        'name': q['/cac:PartyName/cbc:Name/text()'],
-                    }
+        with self.query(
+            '/can:ContractAwardNotice/cac:TenderResult/cac:WinningParty') as q:
+            if q.element() is not None:
+                return {
+                    'nif': (q['/cac:PartyIdentification/cbc:ID[@schemeName="CIF" or @schemeName="NIF" or @schemeName="NIE" or @schemeName="OTROS" or @schemeName="ID_UTE_TEMP_PLATAFORMA"]/text()']
+                            or q['/cac:PartyIdentification/cbc:ID/text()']),
+                    'name': q['/cac:PartyName/cbc:Name/text()'],
+                }
 
     def parse_contractor(self):
         with self.query('/can:ContractAwardNotice') as q:

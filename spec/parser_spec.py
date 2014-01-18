@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-
 from expects import expect
 from mamba import describe, context, before
 
 from contratacion.parser import Parser, Codice1Parser, Codice2Parser
 
 from spec.fixtures import (DOCUMENT, NO_VERSION_DOCUMENT, CODICE_2_DOCUMENT,
-                           CODICE_21_DOCUMENT)
+                           CODICE_21_DOCUMENT, NON_AWARDED_CODICE_2_DOCUMENT)
 
 
 def _make_parser(doc):
@@ -143,7 +141,7 @@ with describe('Codice2Parser with CODICE 2 document') as _:
             expect(_.result['contracted']['name']).to.be.equal(u'ELECTRICIDAD FERYSAN, S.A.')
 
     @before.all
-    def firxture__():
+    def fixture__():
         _.main_parser = _make_parser(CODICE_2_DOCUMENT)
         _.parser = Codice2Parser(_.main_parser.query)
         _.result = _.parser.parse()
@@ -195,7 +193,7 @@ with describe('Codice2Parser with CODICE 2.1 document') as _:
                 'PRAXAIR ESPA\xd1A, SLU'.decode('latin-1'))
 
     @before.all
-    def firxture___():
+    def fixture___():
         _.main_parser = _make_parser(CODICE_21_DOCUMENT)
         _.parser = Codice2Parser(_.main_parser.query)
         _.result = _.parser.parse()
@@ -205,3 +203,44 @@ with describe('Codice2Parser with CODICE 2.1 document') as _:
         _.contractor_party_name = ('Jefatura de la Secci\xf3n Econ\xf3mico-'
                                    'Administrativa 63 - Base A\xe9rea de '
                                    'Alcantarilla'.decode('latin-1'))
+
+with describe('Codice2Parser with a non awarded CODICE 2 document') as _:
+    with context('parse method'):
+        def it_should_obtain_uuid___():
+            expect(_.result['uuid']).to.be.equal(u'2013-540567')
+
+        def it_should_obtain_file___():
+            expect(_.result['file']).to.be.equal(u'PA 01/2013')
+
+        def it_should_obtain_title___():
+            expect(_.result['title']).to.be.equal(_.title.decode('latin-1'))
+
+        def it_should_obtain_amount___():
+            expect(_.result['amount']).to.be.equal(None)
+
+        def it_should_obtain_issued_at___():
+            expect(_.result['issued_at']).to.be.equal('2013-12-16T12:03:01+01:00')
+
+        def it_should_obtain_awarded_at___():
+            expect(_.result['awarded_at']).to.be.equal('2013-12-12T00:00:00+01:00')
+
+        def it_should_obtain_contractor_party___():
+            expect(_.result['contractor']).to.be.a(dict)
+
+        def it_should_obtain_contractor_party_nif___():
+            expect(_.result['contractor']['nif']).to.be.equal('S2800464F')
+
+        def it_should_obtain_contractor_party_name___():
+            expect(_.result['contractor']['name']).to.be.equal(
+                _.contractor_party_name.decode('latin-1'))
+
+        def it_should_obtain_contracted_party___():
+            expect(_.result['contracted']).to.be.none
+
+    @before.all
+    def fixture____():
+        _.main_parser = _make_parser(NON_AWARDED_CODICE_2_DOCUMENT)
+        _.parser = Codice2Parser(_.main_parser.query)
+        _.result = _.parser.parse()
+        _.title = 'Suministro para la adquisici\xf3n actualizaci\xf3n y soporte t\xe9cnico de producto Microsoft con destino a la Subsecretaria del Ministerio de Hacienda y Administraciones P\xfablicas'
+        _.contractor_party_name = 'Subsecretar\xeda de Hacienda y Administraciones P\xfablicas (Oficial\xeda Mayor)'

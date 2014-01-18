@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContractAwardNotice xmlns="urn:dgpe:names:draft:codice:schema:xsd:ContractAwardNotice-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2" xmlns:cac-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2">
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>CODICE 2.01</cbc:CustomizationID>
+    <cbc:ProfileID>CiP 1.9</cbc:ProfileID>
+    <cbc:ID>0000001522380</cbc:ID>
+    <cbc:UUID>2013-540567</cbc:UUID>
+    <cbc:ContractFolderID>PA 01/2013</cbc:ContractFolderID>
+    <cbc:IssueDate>2013-12-16+01:00</cbc:IssueDate>
+    <cbc:IssueTime>12:03:01.036+01:00</cbc:IssueTime>
+    <cac:MinutesDocumentReference>
+        <cbc:ID schemeName="ID_DOC_PLACE">acuerdo prpta desierto_0001.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Documento de Acta de Adjudicación">ACTA_ADJ</cbc:DocumentTypeCode>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=9013c66a-82a4-4b43-809d-0a65a172a05b</cbc:URI>
+                <cbc:DocumentHash>acUZeoLR6NgSst2eaEIdOL2pRDk=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:MinutesDocumentReference>
+    <cac:ContractingParty>
+        <cbc:ContractingPartyTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc" listVersionID="2006" name="Administración General del Estado">1</cbc:ContractingPartyTypeCode>
+        <cbc:ActivityCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityActivityCode-1.04.gc" listVersionID="2006" name="Economía y Hacienda">28</cbc:ActivityCode>
+        <cbc:BuyerProfileURIID>https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&amp;idBp=c0bGH9vJKU4%3D</cbc:BuyerProfileURIID>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="ID_PLATAFORMA">10000380053861</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">S2800464F</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Subsecretaría de Hacienda y Administraciones Públicas (Oficialía Mayor)</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28014</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Alcalá 9</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:Name>Subsecretaría de Hacienda y Administraciones Públicas (Oficialía Mayor)</cbc:Name>
+                <cbc:Telephone>915958176</cbc:Telephone>
+                <cbc:ElectronicMail>esther.blanco@meh.es</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:JobTitle>Subsecretaria de Hacienda y Administraciones Públicas</cbc:JobTitle>
+            </cac:Person>
+        </cac:Party>
+    </cac:ContractingParty>
+    <cac:TenderingTerms>
+        <cbc:RequiredCurriculaIndicator>false</cbc:RequiredCurriculaIndicator>
+        <cbc:VariantConstraintIndicator>false</cbc:VariantConstraintIndicator>
+        <cbc:MaximumAdvertisementAmount currencyID="EUR">2000</cbc:MaximumAdvertisementAmount>
+        <cac:TendererQualificationRequest>
+            <cbc:Description>Los que figuran en la clausula V apartado 7º del PCAP</cbc:Description>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Capacidad de obrar">1</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="No prohibición para contratar">2</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="No estar incurso en incompatibilidades">3</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Cumplimiento con las obligaciones con la Seguridad Social">4</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Cumplimiento con las obligaciones tributarias">5</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc" listVersionID="2.0" name="Para las empresas extranjeras, declaración de sometimiento a la legislación española.">9</cbc:RequirementTypeCode>
+            </cac:SpecificTendererRequirement>
+        </cac:TendererQualificationRequest>
+        <cac:AdditionalInformationParty>
+            <cac:PartyName>
+                <cbc:Name>Subsecretaría de Hacienda y Administraciones Públicas (Oficialía Mayor)</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28014</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Alcalá 9</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:AdditionalInformationParty>
+        <cac:DocumentProviderParty>
+            <cac:PartyName>
+                <cbc:Name>Subsecretaría de Hacienda y Administraciones Públicas (Oficialía Mayor)</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28014</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Alcalá 9</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:DocumentProviderParty>
+        <cac:TenderRecipientParty>
+            <cac:PartyName>
+                <cbc:Name>Subsecretaría de Hacienda y Administraciones Públicas (Oficialía Mayor)</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28014</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Alcalá 9</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:TenderRecipientParty>
+        <cac:Language>
+            <cbc:ID>es</cbc:ID>
+        </cac:Language>
+    </cac:TenderingTerms>
+    <cac:TenderingProcess>
+        <cbc:ProcedureCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.05/TenderingProcessCode-1.05.gc" listVersionID="1.05" name="Abierto">1</cbc:ProcedureCode>
+        <cbc:UrgencyCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc" listVersionID="2006" name="Ordinaria">1</cbc:UrgencyCode>
+        <cbc:ExpenseCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/ExpenseTypeCode-1.04.gc" listVersionID="2006" name="Anticipada">2</cbc:ExpenseCode>
+        <cbc:PartPresentationCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/TenderPresentationCode-1.04.gc" listVersionID="2006" name="A todos los lotes">2</cbc:PartPresentationCode>
+        <cbc:SubmissionMethodCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/TenderDeliveryCode-1.04.gc" listVersionID="2006" name="Manual">2</cbc:SubmissionMethodCode>
+        <cac:DocumentAvailabilityPeriod>
+            <cbc:EndDate>2013-11-22+01:00</cbc:EndDate>
+            <cbc:EndTime>14:30:00+01:00</cbc:EndTime>
+        </cac:DocumentAvailabilityPeriod>
+        <cac:TenderSubmissionDeadlinePeriod>
+            <cbc:EndDate>2013-11-25+01:00</cbc:EndDate>
+            <cbc:EndTime>17:00:00+01:00</cbc:EndTime>
+            <cbc:Description>Registro General Ministerio Hacienda y Administraciones Publicas
+Alcala 9 -28014 Madrid</cbc:Description>
+        </cac:TenderSubmissionDeadlinePeriod>
+        <cac:NoticeDocumentReference>
+            <cbc:ID schemeName="ENVIO_CN_DOUE">2013-518280</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:IssueDate>2013-10-16+02:00</cbc:IssueDate>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Envío de Anuncio de Licitación al DOUE">ENVIO_CN_DOUE</cbc:DocumentTypeCode>
+        </cac:NoticeDocumentReference>
+        <cac:NoticeDocumentReference>
+            <cbc:ID schemeName="ENVIO_CN_DOUE">2013-518289</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:IssueDate>2013-10-16+02:00</cbc:IssueDate>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Envío de Anuncio de Licitación al DOUE">ENVIO_CN_DOUE</cbc:DocumentTypeCode>
+        </cac:NoticeDocumentReference>
+        <cac:NoticeDocumentReference>
+            <cbc:ID>2013/S 203-351280</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:IssueDate>2013-10-18+02:00</cbc:IssueDate>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Anuncio de Licitación publicado en DOUE">PUB_CN_DOUE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>http://ted.europa.eu/udl?uri=TED:NOTICE:351280-2013:TEXT:ES:HTML</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:NoticeDocumentReference>
+        <cac:NoticeDocumentReference>
+            <cbc:ID>2013-518280</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:IssueDate>2013-10-22+02:00</cbc:IssueDate>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Anuncio de Licitación publicado en BOE">PUB_CN_BOE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>http://www.boe.es/boe/dias/2013/10/22/pdfs/BOE-B-2013-39534.pdf</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:NoticeDocumentReference>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>Detalle_Licitacion</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:DocumentTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.03/TenderingDocumentTypeCode-2.03.gc" listVersionID="2.03" name="Documento de detalle del Expediente publicado en la Plataforma">LINK_EXP_PLACE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=bq0BV%2F%2BteHMQK2TEfXGy%2BA%3D%3D</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:OpenTenderEvent>
+            <cbc:OccurrenceDate>2013-12-05+01:00</cbc:OccurrenceDate>
+            <cbc:OccurrenceTime>10:00:00+01:00</cbc:OccurrenceTime>
+            <cbc:TypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.01/EventTypeCode-2.01.gc" listVersionID="2.01" name="Apertura sobre oferta económica">4</cbc:TypeCode>
+            <cac:OccurrenceLocation>
+                <cbc:Description>Salon de Actos de la Subsecretaria de Hacienda y Administraciones Publicas</cbc:Description>
+                <cac:Address>
+                    <cbc:AddressFormatCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" listVersionID="2007" name="Spanish Format">1</cbc:AddressFormatCode>
+                    <cbc:CityName>Madrid</cbc:CityName>
+                    <cbc:PostalZone>28014</cbc:PostalZone>
+                    <cac:AddressLine>
+                        <cbc:Line>Alcala nº 9</cbc:Line>
+                    </cac:AddressLine>
+                    <cac:Country>
+                        <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                        <cbc:Name>España</cbc:Name>
+                    </cac:Country>
+                </cac:Address>
+            </cac:OccurrenceLocation>
+        </cac:OpenTenderEvent>
+    </cac:TenderingProcess>
+    <cac:ProcurementProject>
+        <cbc:Name>Suministro para la adquisición actualización y soporte técnico de producto Microsoft con destino a la Subsecretaria del Ministerio de Hacienda y Administraciones Públicas</cbc:Name>
+        <cbc:TypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/ContractCode-2.02.gc" listVersionID="2.02" name="Suministros">1</cbc:TypeCode>
+        <cbc:SubTypeCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/1.04/GoodsContractCode-1.04.gc" listVersionID="2006" name="Adquisición">2</cbc:SubTypeCode>
+        <cac:BudgetAmount>
+            <cbc:EstimatedOverallContractAmount currencyID="EUR">750046.63</cbc:EstimatedOverallContractAmount>
+            <cbc:TotalAmount currencyID="EUR">907556.42</cbc:TotalAmount>
+            <cbc:TaxExclusiveAmount currencyID="EUR">750046.63</cbc:TaxExclusiveAmount>
+        </cac:BudgetAmount>
+        <cac:RequiredCommodityClassification>
+            <cbc:ItemClassificationCode listName="CPV" listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc" listVersionID="2007" name="Paquetes de software y sistemas de información.">48000000</cbc:ItemClassificationCode>
+        </cac:RequiredCommodityClassification>
+        <cac:RealizedLocation>
+            <cbc:CountrySubentity>ESPAÑA</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.0/NUTS-2009.gc" listVersionID="2009" name="ESPAÑA">ES</cbc:CountrySubentityCode>
+            <cac:Address>
+                <cac:Country>
+                    <cbc:IdentificationCode languageID="es" listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc" listVersionID="0.3" name="España">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:Address>
+        </cac:RealizedLocation>
+    </cac:ProcurementProject>
+    <cac:TenderResult>
+        <cbc:ResultCode languageID="es" listURI="http://contrataciondelestado.es/codice/cl/2.02/TenderResultCode-2.02.gc" listVersionID="2.02" name="Desierto">3</cbc:ResultCode>
+        <cbc:AwardDate>2013-12-12+01:00</cbc:AwardDate>
+        <cbc:AwardTime>00:00:00+01:00</cbc:AwardTime>
+    </cac:TenderResult>
+</ContractAwardNotice>
+
