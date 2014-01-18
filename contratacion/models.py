@@ -116,7 +116,7 @@ class Licitation(Base):
 
             return licitation
         except Exception as error:
-            logger.error(error)
+            logger.error(error, exc_info=1)
             session.rollback()
         else:
             return True

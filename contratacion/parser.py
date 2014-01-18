@@ -278,8 +278,8 @@ def parse(store):
             document = Parser(content)
             if is_valid_document(document):
                 yield validate(document.parse())
-        except etree.XMLSyntaxError:
-            pass
+        except etree.XMLSyntaxError as error:
+            logger.error('Could not parse document: "%s"', error, exc_info=1)
 
 
 def _log_parsing_progress(*counters):
