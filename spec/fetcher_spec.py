@@ -21,12 +21,12 @@ with describe(Fetcher) as _:
         expect(_get_fetcher()).to.have.property('start_page', 1)
 
     with context('should_get_page_details'):
-        def it_should_say_no_if_for_pages_previous_to_start_page():
+        def it_should_say_no_for_pages_previous_to_start_page():
             fetcher = _get_fetcher(page=5)
 
             expect(fetcher.should_get_page_details(1)).to.be.false
 
-        def it_should_say_yes_if_for_start_page():
+        def it_should_say_yes_for_start_page():
             fetcher = _get_fetcher(page=5)
 
             expect(fetcher.should_get_page_details(5)).to.be.true
@@ -216,7 +216,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.get_most_recent_xml_link_from_detail_page.call_args[0]).to.have(document)
 
-        def it_should_return_a_prepared_request_for_document_url():
+        def it_should_return_a_prepared_request_for_document_url_():
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=DATA_PAGE_URL)
