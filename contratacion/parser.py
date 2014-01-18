@@ -264,7 +264,11 @@ def iteritems(store):
 
 
 def is_valid_document(parser):
-    return parser.type == 'ContractAwardNotice'
+    if parser.type != 'ContractAwardNotice':
+        logger.info('Unwanted document type: ' + parser.type)
+        return False
+    else:
+        return True
 
 
 def parse(store):
