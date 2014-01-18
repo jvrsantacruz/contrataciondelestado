@@ -44,12 +44,8 @@ class Licitation(Model):
 
 
 def validate(data):
-    try:
-        model = Licitation(**data)
-    except (KeyError, booby.errors.BoobyError) as error:
-        logger.error(error)
+    model = Licitation(**data)
+    if model.is_valid:
+        return dict(model)
     else:
-        if model.is_valid:
-            return dict(model)
-        else:
-            logger.error(dict(model.validation_errors))
+        logger.error(dict(model.validation_errors))
