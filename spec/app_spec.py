@@ -40,6 +40,16 @@ with describe('Application') as _:
 
                 _expect_not_found_resposne(response)
 
+        with context('when GET /licitations?per_page=1'):
+            def it_should_return_a_page_with_the_first_item():
+                licitations = [l.to_dict() for l in _licitations()[:1]]
+
+                with _app().test_client() as client:
+                    response = client.get('/licitations?per_page=1')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(licitations)
+
         with context('when GET /licitations?page=2'):
             def it_should_return_per_page_items_of_page_2():
                 licitations = [l.to_dict() for l in
@@ -47,6 +57,16 @@ with describe('Application') as _:
 
                 with _app().test_client() as client:
                     response = client.get('/licitations?page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(licitations)
+
+        with context('when GET /licitations?per_page=1&page=2'):
+            def it_should_return_a_page_with_the_second_item():
+                licitations = [l.to_dict() for l in _licitations()[1:2]]
+
+                with _app().test_client() as client:
+                    response = client.get('/licitations?per_page=1&page=2')
 
                 _expect_ok_response(response)
                 expect(_json_data(response)).to.be.equal(licitations)
@@ -79,6 +99,37 @@ with describe('Application') as _:
 
                 _expect_not_found_resposne(response)
 
+        with context('when GET /contractors?per_page=1'):
+            def it_should_return_a_page_with_the_first_item():
+                contractors = [l.to_dict() for l in _contractors()[:1]]
+
+                with _app().test_client() as client:
+                    response = client.get('/contractors?per_page=1')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contractors)
+
+        with context('when GET /contractors?page=2'):
+            def it_should_return_per_page_items_of_page_2():
+                contractors = [l.to_dict() for l in
+                    _contractors().offset(_.per_page).limit(_.per_page)]
+
+                with _app().test_client() as client:
+                    response = client.get('/contractors?page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contractors)
+
+        with context('when GET /contractors?per_page=1&page=2'):
+            def it_should_return_a_page_with_the_second_item():
+                contractors = [l.to_dict() for l in _contractors()[1:2]]
+
+                with _app().test_client() as client:
+                    response = client.get('/contractors?per_page=1&page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contractors)
+
     with context('contracted resource'):
         with context('when GET /contracted'):
             def it_should_return_ok_with_the_first_10_contracted():
@@ -107,6 +158,38 @@ with describe('Application') as _:
 
                 _expect_not_found_resposne(response)
 
+        with context('when GET /contracted?per_page=1'):
+            def it_should_return_a_page_with_the_first_item____():
+                contracted = [l.to_dict() for l in _contracted()[:1]]
+
+                with _app().test_client() as client:
+                    response = client.get('/contracted?per_page=1')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contracted)
+
+        with context('when GET /contracted?page=2'):
+            def it_should_return_per_page_items_of_page_2___():
+                contracted = [l.to_dict() for l in
+                    _contracted().offset(_.per_page).limit(_.per_page)]
+
+                with _app().test_client() as client:
+                    response = client.get('/contracted?page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contracted)
+
+        with context('when GET /contracted?per_page=1&page=2'):
+            def it_should_return_a_page_with_the_second_item____():
+                contracted = [l.to_dict() for l in _contracted()[1:2]]
+
+                with _app().test_client() as client:
+                    response = client.get('/contracted?per_page=1&page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(contracted)
+
+
     with context('party resource'):
         with context('when GET /parties'):
             def it_should_return_ok_with_the_first_10_parties():
@@ -134,6 +217,37 @@ with describe('Application') as _:
                     response = client.get('/parties/999999')
 
                 _expect_not_found_resposne(response)
+
+        with context('when GET /parties?per_page=1'):
+            def it_should_return_a_page_with_the_first_item___():
+                parties = [l.to_dict() for l in _parties()[:1]]
+
+                with _app().test_client() as client:
+                    response = client.get('/parties?per_page=1')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(parties)
+
+        with context('when GET /parties?page=2'):
+            def it_should_return_per_page_items_of_page_2___():
+                parties = [l.to_dict() for l in
+                    _parties().offset(_.per_page).limit(_.per_page)]
+
+                with _app().test_client() as client:
+                    response = client.get('/parties?page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(parties)
+
+        with context('when GET /parties?per_page=1&page=2'):
+            def it_should_return_a_page_with_the_second_item____():
+                parties = [l.to_dict() for l in _parties()[1:2]]
+
+                with _app().test_client() as client:
+                    response = client.get('/parties?per_page=1&page=2')
+
+                _expect_ok_response(response)
+                expect(_json_data(response)).to.be.equal(parties)
 
     @before.all
     def setup():
