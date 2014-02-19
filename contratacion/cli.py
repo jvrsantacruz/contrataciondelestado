@@ -2,10 +2,12 @@
 """Contratacion
 
 Usage:
+    contratacion start [options ...]
     contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async] [--max-retries=<N>]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
 Commands:
+    start       Starts development server
     fetch       Download documents from the web page
     parse       Parse and store downloaded documents
 
@@ -46,6 +48,13 @@ def parse_documents(args):
     parser.parse_documents(store_path=store, database_path=db)
 
 
+def start(args):
+    from .application import create_app
+
+    app = create_app()
+    app.run()
+
+
 def configure_logging(args):
     from . import log
 
@@ -62,3 +71,5 @@ def main():
         fetch_documents(args)
     elif args['parse']:
         parse_documents(args)
+    elif args['start']:
+        start(args)
