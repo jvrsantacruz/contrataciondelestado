@@ -21,7 +21,9 @@ setup(
         'pyquery',
         'python-dateutil',
         'requests',
-        'simplekv'
+        'simplekv',
+        'Flask',
+        'Flask-RESTful'
     ],
     classifiers=[
         'Environment :: Console',

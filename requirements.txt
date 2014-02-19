@@ -7,3 +7,5 @@ pyquery==1.2.8
 python-dateutil==2.2
 requests==2.1.0
 simplekv==0.6
+Flask==0.10.1
+Flask-RESTful==0.2.10
