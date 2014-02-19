@@ -2,7 +2,7 @@
 """Contratacion
 
 Usage:
-    contratacion start [options ...]
+    contratacion start [options ...] [--debug]
     contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async] [--max-retries=<N>]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
@@ -51,7 +51,7 @@ def parse_documents(args):
 def start(args):
     from .application import create_app
 
-    app = create_app()
+    app = create_app(debug=args['--debug'])
     app.run()
 
 

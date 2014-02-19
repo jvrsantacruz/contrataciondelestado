@@ -6,9 +6,13 @@ from flask import Flask, Blueprint, current_app, g
 from .models import get_scoped_session
 
 
-def create_app(configuration=None):
+def create_app(**kwargs):
     app = Flask('contratacion')
-    setup_configuration(app, configuration)
+
+    if kwargs.get('debug'):
+        app.debug = True
+
+    setup_configuration(app, kwargs.get('config'))
     setup_api_handlers(app)
     setup_database_session(app)
     return app
