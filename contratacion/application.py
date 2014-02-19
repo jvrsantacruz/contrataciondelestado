@@ -37,5 +37,7 @@ def setup_database_session(app):
 def setup_configuration(app, data):
     if data is None:
         app.config.from_envvar('CONTRATACION_CONFIG')
+    elif isinstance(data, basestring):
+        app.config.from_pyfile(data)
     else:
         app.config.update(data)

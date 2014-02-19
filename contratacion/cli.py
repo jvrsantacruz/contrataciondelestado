@@ -2,7 +2,7 @@
 """Contratacion
 
 Usage:
-    contratacion start [options ...] [--debug]
+    contratacion start [options ...] [--debug] [--config FILE]
     contratacion fetch [options ...] [--page=<N>] [--store=<FILE>] [--workers=<N>] [--async] [--max-retries=<N>]
     contratacion parse [options ...] [--store=<FILE>] [--db=<FILE>]
 
@@ -14,6 +14,7 @@ Commands:
 Options:
     -h --help         See this help
     --version         Show version
+    --config FILE     Application config file (default envvar CONTRATACION_CONFIG)
     --page N          Skip previous pages when downloading [default: 1]
     --workers N       Max number of concurrent requests [default: 5]
     --store FILE      Database file for download store [default: store.sqlite]
@@ -51,7 +52,7 @@ def parse_documents(args):
 def start(args):
     from .application import create_app
 
-    app = create_app(debug=args['--debug'])
+    app = create_app(debug=args['--debug'], config=args['--config'])
     app.run()
 
 
