@@ -24,7 +24,7 @@ def setup_api_handlers(app):
 
 
 def setup_database_session(app):
-    @app.before_first_request
+    @app.before_request
     def setup_session(exception=None):
         g.db = get_scoped_session(current_app.config['DATABASE'])
 
