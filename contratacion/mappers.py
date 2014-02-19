@@ -16,26 +16,34 @@ class Mapper(object):
         return  cls(session.query(model))
 
     def all(self):
-        return map(self.serialize, self.query[:10])
+        return serialize_iter(self.query)
 
     def all_paginated(self, page=None, per_page=None):
         collection, meta = paginate(self.query, page=page, per_page=per_page)
-        return map(self.serialize, collection), meta
+        return serialize_list(collection), meta
 
     def get(self, id):
-        return self.serialize(self.query.get(id))
+        return serialize(self.query.get(id))
 
     def get_or_404(self, id):
         return self.get(id) or abort(404)
 
-    def serialize(self, obj):
-        if obj is not None:
-            return obj.to_dict()
-
 
 class ViewMapper(Mapper):
     def get(self, id):
-        return self.serialize(self.query.filter_by(id=id).first())
+        return serialize(self.query.filter_by(id=id).first())
+
+
+def serialize(obj):
+    return None if obj is None else obj.to_dict()
+
+
+def serialize_iter(objs):
+    return (serialize(obj) for obj in objs)
+
+
+def serialize_list(objs):
+    return list(serialize_iter(objs))
 
 
 def paginate(collection, page=None, per_page=None):
