@@ -2,9 +2,8 @@
 
 import urllib
 
+from expects import *
 from mock import Mock, MagicMock
-from expects import expect
-from mamba import describe, context, before
 
 from pyquery import PyQuery
 
@@ -16,102 +15,102 @@ from spec.fixtures import (MAIN_PAGE, FIRST_PAGE_URL, FIRST_PAGE, DETAIL_URLS,
                            CODICE_21_DOCUMENT, LAST_PAGE, LAST_DETAIL_URLS)
 
 
-with describe(Fetcher) as _:
-    def it_should_have_a_start_page_property_default_to_1():
+with description(Fetcher):
+    with it('should have a start page property default to 1'):
         expect(_get_fetcher()).to.have.property('start_page', 1)
 
     with context('should_get_page_details'):
-        def it_should_say_no_for_pages_previous_to_start_page():
+        with it('should say no for pages previous to start page'):
             fetcher = _get_fetcher(page=5)
 
             expect(fetcher.should_get_page_details(1)).to.be.false
 
-        def it_should_say_yes_for_start_page():
+        with it('should say yes for start page'):
             fetcher = _get_fetcher(page=5)
 
             expect(fetcher.should_get_page_details(5)).to.be.true
 
-        def it_should_say_yes_for_pages_posterior_to_start_page():
+        with it('should say yes for pages posterior to start page'):
             fetcher = _get_fetcher(page=5)
 
             expect(fetcher.should_get_page_details(6)).to.be.true
 
     with context('get_link_to_first_page'):
-        def it_should_return_a_url_from_given_document():
-            document = _.documents['main_page']
+        with it('should return a url from given document'):
+            document = self.documents['main_page']
 
-            url = _.fetcher.get_link_to_first_page(document)
+            url = self.fetcher.get_link_to_first_page(document)
 
             expect(url).to.be.equal(FIRST_PAGE_URL)
 
     with context('get_requests_to_detail_page'):
-        def it_should_return_list_of_prepared_requests_for_given_urls():
+        with it('should return list of prepared requests for given urls'):
             urls = ['http://foo.com/', 'http://bar.com/']
 
-            requests = _.fetcher.get_requests_to_detail_page(urls)
+            requests = self.fetcher.get_requests_to_detail_page(urls)
 
             expect([r.url for r in requests]).to.be.equal(urls)
 
     with context('get_links_to_detail_page'):
-        def it_should_return_a_list_of_urls_from_given_document():
-            document = _.documents['first_page']
+        with it('should return a list of urls from given document'):
+            document = self.documents['first_page']
 
-            urls = _.fetcher.get_links_to_detail_page(document)
+            urls = self.fetcher.get_links_to_detail_page(document)
 
             expect(urls).to.be.equal(DETAIL_URLS)
 
-        def it_should_return_a_list_of_urls_for_last_page_document():
-            document = _.documents['last_page']
+        with it('should return a list of urls for last page document'):
+            document = self.documents['last_page']
 
-            urls = _.fetcher.get_links_to_detail_page(document)
+            urls = self.fetcher.get_links_to_detail_page(document)
 
             expect(urls).to.be.equal(LAST_DETAIL_URLS)
 
     with context('get_page_number'):
-        def it_should_return_current_page_number():
-            document = _.documents['first_page']
+        with it('should return current page number'):
+            document = self.documents['first_page']
 
-            page = _.fetcher.get_page_number(document)
+            page = self.fetcher.get_page_number(document)
 
             expect(page).to.be.equal(1)
 
     with context('get_request_to_next_list_page'):
-        def it_should_return_request_for_the_next_page():
-            document = _.documents['first_page']
+        with it('should return request for the next page'):
+            document = self.documents['first_page']
 
-            request = _.fetcher.get_request_to_next_list_page(document)
+            request = self.fetcher.get_request_to_next_list_page(document)
 
             expect(request).to.have.property('path_url', FIRST_PAGE_ACTION)
             expect(request).to.have.property('body', urllib.urlencode(FIRST_PAGE_FORM_DATA))
 
-        def it_should_return_none_at_the_last_page():
-            document = _.documents['last_page']
+        with it('should return none at the last page'):
+            document = self.documents['last_page']
 
-            request = _.fetcher.get_request_to_next_list_page(document)
+            request = self.fetcher.get_request_to_next_list_page(document)
 
             expect(request).to.be.none
 
     with context('get_most_recent_xml_link_from_detail_page'):
-        def it_should_return_a_url_from_the_given_document_():
-            document = _.documents['detail_page']
+        with it('should return a url from the given document '):
+            document = self.documents['detail_page']
 
-            url = _.fetcher.get_most_recent_xml_link_from_detail_page(document)
+            url = self.fetcher.get_most_recent_xml_link_from_detail_page(document)
 
             expect(url).to.be.equal(DATA_PAGE_URL)
 
     with context('get_html_meta_redirection'):
-        def it_should_return_a_url_from_the_given_document__():
-            document = _.documents['data_page']
+        with it('should return a url from the given document  '):
+            document = self.documents['data_page']
 
-            url = _.fetcher.get_html_meta_redirection_url(document)
+            url = self.fetcher.get_html_meta_redirection_url(document)
 
             expect(url).to.be.equal(DOCUMENT_URL)
 
     with context('fetch_list_page'):
-        def it_should_return_current_page_next_request_and_all_detail_requests():
+        with it('should return current page next request and all detail requests'):
             request = None
             fetcher = _get_fetcher()
-            fetcher.fetch = Mock(return_value=_.documents['first_page'])
+            fetcher.fetch = Mock(return_value=self.documents['first_page'])
 
             requests, page, next = fetcher.fetch_list_page(request)
 
@@ -119,10 +118,10 @@ with describe(Fetcher) as _:
             expect(next.path_url).to.be.equal(FIRST_PAGE_ACTION)
             expect([r.path_url for r in requests]).to.be.equal(DETAIL_URLS)
 
-        def it_should_return_current_page_none_for_next_request_and_all_detail_requests():
+        with it('should return current page none for next request and all detail requests'):
             request = None
             fetcher = _get_fetcher()
-            fetcher.fetch = Mock(return_value=_.documents['last_page'])
+            fetcher.fetch = Mock(return_value=self.documents['last_page'])
 
             requests, page, next = fetcher.fetch_list_page(request)
 
@@ -131,13 +130,7 @@ with describe(Fetcher) as _:
             expect([r.path_url for r in requests]).to.be.equal(LAST_DETAIL_URLS)
 
     with context('fetch_data'):
-        def _requests_for_fetch_data(fetcher):
-            document_url = fetcher.uri(DOCUMENT_URL)
-            request = fetcher.request(document_url)
-            response = _Response(url=document_url + '/', text=CODICE_21_DOCUMENT)
-            return document_url, request, response
-
-        def it_should_do_nothing_if_the_document_has_been_downloaded_before():
+        with it('should do nothing if the document has been downloaded before'):
             fetcher = _get_fetcher()
             document_url, request, response = _requests_for_fetch_data(fetcher)
             fetcher.store.__contains__.return_value = True
@@ -148,7 +141,7 @@ with describe(Fetcher) as _:
             expect(fetcher.send.called).to.be.false
             expect(fetcher.store.__contains__.call_args[0]).to.have(request.url)
 
-        def it_should_download_new_data_documents():
+        with it('should download new data documents'):
             fetcher = _get_fetcher()
             document_url, request, response = _requests_for_fetch_data(fetcher)
             fetcher.store.__contains__.return_value = False
@@ -158,7 +151,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.send.call_args[0]).to.have(request)
 
-        def it_should_store_downloaded_data_documents_by_url():
+        with it('should store downloaded data documents by url'):
             fetcher = _get_fetcher()
             document_url, request, response = _requests_for_fetch_data(fetcher)
             fetcher.store.__contains__.return_value = False
@@ -170,7 +163,7 @@ with describe(Fetcher) as _:
             expect(fetcher.store.put.call_args[0]).to.have(response.url, response.text)
 
     with context('fetch_data_page'):
-        def it_should_fetch_the_data_page():
+        with it('should fetch the data page'):
             request, fetcher = None, _get_fetcher()
             fetcher.fetch = Mock()
             fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
@@ -179,7 +172,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.fetch.call_args[0]).to.have(request)
 
-        def it_should_resolve_the_meta_redirection():
+        with it('should resolve the meta redirection'):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
@@ -188,7 +181,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.get_html_meta_redirection_url.call_args[0]).to.have(document)
 
-        def it_should_return_a_prepared_request_for_document_url():
+        with it('should return a prepared request for document url'):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_html_meta_redirection_url = Mock(return_value=DOCUMENT_URL)
@@ -198,7 +191,7 @@ with describe(Fetcher) as _:
             expect(request.path_url).to.be.equal(DOCUMENT_URL)
 
     with context('fetch_detail_page'):
-        def it_should_fetch_the_detail_request():
+        with it('should fetch the detail request'):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
@@ -207,7 +200,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.fetch.call_args[0]).to.have(request)
 
-        def it_should_get_the_data_page_link():
+        with it('should get the data page link'):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
@@ -216,7 +209,7 @@ with describe(Fetcher) as _:
 
             expect(fetcher.get_most_recent_xml_link_from_detail_page.call_args[0]).to.have(document)
 
-        def it_should_return_a_prepared_request_for_document_url_():
+        with it('should return a prepared request for document url '):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=DATA_PAGE_URL)
@@ -225,7 +218,7 @@ with describe(Fetcher) as _:
 
             expect(next_request.url).to.be.equal(DATA_PAGE_URL)
 
-        def it_should_return_none_if_there_is_no_data_document_links():
+        with it('should return none if there is no data document links'):
             request, fetcher, document = None, _get_fetcher(), 'document'
             fetcher.fetch = Mock(return_value=document)
             fetcher.get_most_recent_xml_link_from_detail_page = Mock(return_value=None)
@@ -235,7 +228,7 @@ with describe(Fetcher) as _:
             expect(next_request).to.be.none
 
     with context('fetch_data_document'):
-        def it_should_fetch_a_data_document_from_a_detail_page_request():
+        with it('should fetch a data document from a detail page request'):
             detail_page_request, data_page_request, data_document_request =\
                 _Request(1), _Request(2), _Request(3)
             fetcher = _get_fetcher(max_retries=0)
@@ -249,19 +242,9 @@ with describe(Fetcher) as _:
             fetcher.fetch_data_page.assert_called_with(data_page_request)
             fetcher.fetch_data.assert_called_with(data_document_request)
 
-    def _get_store():
-        return MagicMock()
-
-    def _get_fetcher(**kwargs):
-        return Fetcher(store=_get_store(), **kwargs)
-
-    def _get_document(source):
-        return PyQuery(source)
-
-    @before.all
-    def fixture():
-        _.fetcher = _get_fetcher()
-        _.documents = {
+    with before.all:
+        self.fetcher = _get_fetcher()
+        self.documents = {
             'main_page': _get_document(MAIN_PAGE),
             'first_page': _get_document(FIRST_PAGE),
             'detail_page': _get_document(DETAIL_PAGE),
@@ -269,11 +252,32 @@ with describe(Fetcher) as _:
             'last_page': _get_document(LAST_PAGE)
         }
 
-    class _Response(object):
-        def __init__(self, url, text):
-            self.url = url
-            self.text = text
 
-    class _Request(object):
-        def __init__(self, url):
-            self.url = url
+def _get_store():
+    return MagicMock()
+
+
+def _get_fetcher(**kwargs):
+    return Fetcher(store=_get_store(), **kwargs)
+
+
+def _get_document(source):
+    return PyQuery(source)
+
+
+class _Response(object):
+    def __init__(self, url, text):
+        self.url = url
+        self.text = text
+
+
+class _Request(object):
+    def __init__(self, url):
+        self.url = url
+
+
+def _requests_for_fetch_data(fetcher):
+    document_url = fetcher.uri(DOCUMENT_URL)
+    request = fetcher.request(document_url)
+    response = _Response(url=document_url + '/', text=CODICE_21_DOCUMENT)
+    return document_url, request, response

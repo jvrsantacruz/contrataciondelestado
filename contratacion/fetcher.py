@@ -78,7 +78,7 @@ class Profiler(object):
 
     def request_sent(self):
         self.n += 1
-        logger.debug('Requests per second: %f (%d requests)', self.average, self.n)
+        logger.debug(u'Requests per second: %f (%d requests)', self.average, self.n)
 
 
 class Sender(object):
@@ -114,7 +114,7 @@ class Sender(object):
         response = self.send(request)
         try:
             return PyQuery(response.text)
-        except lxml.etree.XMLSyntaxError as error:
+        except lxml.etree.XMLSyntaxError:
             logger.error('Bad response %s:\n%s', response.url, response.text)
 
     def send(self, request):
@@ -329,11 +329,11 @@ class Fetcher(object):
 
         return self.request(self.uri(url))
 
-    html_meta_parser = re.compile(".*;url='([^']+)'")
+    html_meta_parser = re.compile(r".*;url='([^']+)'")
     """Parses url in `<meta http-equiv="refresh" content="0;url='/wps/..'">`"""
 
     def get_html_meta_redirection_url(self, document):
-        meta = document('meta[http-equiv="refresh"]')
+        meta = document(u'meta[http-equiv="refresh"]')
         content = self.html_meta_parser.match(meta.attr('content'))
         url = content.group(1)
         return url
@@ -345,12 +345,12 @@ class Fetcher(object):
         :returns: True if stored, False if already there.
         """
         if request.url in self.store:
-            logger.warning('Already stored ' + request.url)
+            logger.warning(u'Already stored %s', request.url)
             return False
 
         response = self.send(request)
         self.store.put(response.url, response.text)
-        logger.info('Stored ' + response.url)
+        logger.info(u'Stored %s', response.url)
         return True
 
     def request(self, url, data=None):
